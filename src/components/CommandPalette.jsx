@@ -78,7 +78,7 @@ export default function CommandPalette({ open, onClose, onSelect }) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Jump to a tool…"
-            className="w-full bg-transparent py-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
+            className="w-full bg-transparent py-3.5 text-sm text-slate-900 outline-none ring-0 placeholder:text-slate-400 focus:outline-none focus:ring-0 focus-visible:ring-0 dark:text-slate-100"
           />
         </div>
         <ul className="max-h-80 overflow-y-auto p-2">
