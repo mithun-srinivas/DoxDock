@@ -1,0 +1,39 @@
+.gitignore
+  s_53281f68695dfc::t_15a427d5ec5adf 1-25
+index.html
+  s_53281f68695dfc::t_70aeda137d013b 1-36
+package-lock.json
+  s_53281f68695dfc::t_49be9d1a074907 1-7843
+package.json
+  s_53281f68695dfc::t_7f7c5a45d76407 1-32
+postcss.config.js
+  s_53281f68695dfc::t_1e8852c47aefda 1-6
+public/favicon.svg
+  s_53281f68695dfc::t_cf0b1208793632 1-6
+scripts/generate-icons.mjs
+  s_53281f68695dfc::t_805e6699ac2d9d 1-144
+src/index.css
+  s_53281f68695dfc::t_31d4ad781dd438 1-65
+src/main.jsx
+  s_53281f68695dfc::t_872fdef2b42118 1-10
+tailwind.config.js
+  s_53281f68695dfc::t_39dcdffe3d84c3 1-36
+vite.config.js
+  s_53281f68695dfc::t_58549a00af5dae 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "23e2a25620a200ffa2dd3a54e9b7d4bc0380c2a0",
+  "prompts": {},
+  "sessions": {
+    "s_53281f68695dfc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_53281f68695dfc",
+        "model": "unknown"
+      },
+      "human_author": "misriniv <misriniv@cisco.com>"
+    }
+  }
+}
