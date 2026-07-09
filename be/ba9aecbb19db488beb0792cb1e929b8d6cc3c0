@@ -1,0 +1,69 @@
+src/App.jsx
+  s_945f4469f3af82::t_41ae4af7d54ce3 1-184
+src/components/CommandPalette.jsx
+  s_945f4469f3af82::t_2c1c48a35cd421 1-103
+src/components/DownloadButton.jsx
+  s_945f4469f3af82::t_76960614d136cb 1-35
+src/components/Dropzone.jsx
+  s_945f4469f3af82::t_a5536dc2120224 1-97
+src/components/FileList.jsx
+  s_945f4469f3af82::t_ef3cd863821cb8 1-95
+src/components/Icon.jsx
+  s_945f4469f3af82::t_ee50d4bd0687fb 1-108
+src/components/Note.jsx
+  s_945f4469f3af82::t_d26962038b6789 1-30
+src/components/PrivacyBadge.jsx
+  s_945f4469f3af82::t_40add05b9ba519 1-18
+src/components/Progress.jsx
+  s_945f4469f3af82::t_29629bccaa5ee1 1-30
+src/components/ResultGallery.jsx
+  s_945f4469f3af82::t_2cf3792abc87d2 1-75
+src/components/Sidebar.jsx
+  s_945f4469f3af82::t_d5788abdbc144e 1-79
+src/components/SizeCompare.jsx
+  s_945f4469f3af82::t_b52e0da6f9e5b5 1-35
+src/components/ThemeToggle.jsx
+  s_945f4469f3af82::t_f68f6f3f4f0d81 1-37
+src/hooks/useJob.js
+  s_945f4469f3af82::t_f6a1469520611c 1-48
+src/hooks/useLocalStorage.js
+  s_945f4469f3af82::t_90623026ab30c7 1-25
+src/hooks/useTheme.js
+  s_945f4469f3af82::t_eb5a09707455f6 1-23
+src/lib/download.js
+  s_945f4469f3af82::t_710b9dd0bf2ae4 1-54
+src/lib/extractText.js
+  s_945f4469f3af82::t_b4b46e7fc4f72d 1-34
+src/lib/format.js
+  s_945f4469f3af82::t_486af6c88751ea 1-52
+src/lib/htmlBlocks.js
+  s_945f4469f3af82::t_b7fd22f992028d 1-97
+src/lib/imageCanvas.js
+  s_945f4469f3af82::t_d29a306e4dceb5 1-96
+src/lib/markdown.js
+  s_945f4469f3af82::t_8b996ae644cb3c 1-149
+src/lib/pdfLayout.js
+  s_945f4469f3af82::t_75d83a08aa974a 1-243
+src/lib/pdfjs.js
+  s_945f4469f3af82::t_62603d25c9304c 1-27
+src/lib/zip.js
+  s_945f4469f3af82::t_d2e3ab7735b547 1-16
+src/registry/registry.js
+  s_945f4469f3af82::t_57fe4ce297288e 1-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "beba9aecbb19db488beb0792cb1e929b8d6cc3c0",
+  "prompts": {},
+  "sessions": {
+    "s_945f4469f3af82": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_945f4469f3af82",
+        "model": "unknown"
+      },
+      "human_author": "misriniv <misriniv@cisco.com>"
+    }
+  }
+}
