@@ -8,6 +8,7 @@ import Icon from './components/Icon.jsx'
 import Progress from './components/Progress.jsx'
 import Home from './components/Home.jsx'
 import { useTheme } from './hooks/useTheme.js'
+import { useLocalStorage } from './hooks/useLocalStorage.js'
 import { getOperation } from './registry/registry.js'
 
 // Hash routing. An empty hash (or #/ or #/home) means the Home landing page
@@ -40,6 +41,7 @@ export default function App() {
   const [activeId, select] = useHashSelection()
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [collapsed, setCollapsed] = useLocalStorage('doxdock:sidebarCollapsed', false)
 
   const activeOp = activeId ? getOperation(activeId) : null
 
@@ -100,6 +102,16 @@ export default function App() {
         >
           <Icon name={mobileNavOpen ? 'x' : 'grid'} className="h-5 w-5" />
         </button>
+        <button
+          type="button"
+          className="btn-ghost -ml-2 hidden px-2 lg:inline-flex"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-pressed={collapsed}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={() => setCollapsed((c) => !c)}
+        >
+          <Icon name="panelLeft" className="h-5 w-5" />
+        </button>
         <a href="#/" className="flex items-center gap-2" onClick={() => handleSelect(null)}>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
             <Icon name="layers" className="h-5 w-5" />
@@ -136,8 +148,14 @@ export default function App() {
 
       <div className="flex min-h-0 flex-1">
         {/* Sidebar (desktop) */}
-        <aside className="hidden w-72 flex-shrink-0 border-r border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50 lg:block">
-          <Sidebar activeId={activeId} onSelect={handleSelect} onOpenPalette={() => setPaletteOpen(true)} />
+        <aside
+          className={`hidden flex-shrink-0 overflow-hidden bg-slate-50 transition-[width,border] duration-200 dark:bg-slate-900/50 lg:block ${
+            collapsed ? 'lg:w-0 border-r-0' : 'w-72 border-r border-slate-200 dark:border-slate-800'
+          }`}
+        >
+          <div className="w-72">
+            <Sidebar activeId={activeId} onSelect={handleSelect} onOpenPalette={() => setPaletteOpen(true)} />
+          </div>
         </aside>
 
         {/* Sidebar (mobile drawer) */}
