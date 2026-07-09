@@ -7,7 +7,7 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; connect-src 'self'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'self'; form-action 'none'"
     />
-    <title>Why DoxDock exists — a letter</title>
+    <title>Why DoxDock exists</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
       :root {
@@ -46,9 +46,10 @@
       .wrap {
         position: relative;
         z-index: 1;
-        max-width: 40rem;
+        width: 90%;
+        max-width: 60rem;
         margin: 0 auto;
-        padding: 40px 28px 96px;
+        padding: 40px clamp(20px, 4vw, 56px) 96px;
       }
       .top {
         display: flex;
@@ -92,13 +93,13 @@
         font-family: var(--sans);
         font-weight: 640;
         letter-spacing: -0.02em;
-        font-size: clamp(28px, 5.5vw, 42px);
-        line-height: 1.1;
+        font-size: clamp(26px, 4.6vw, 36px);
+        line-height: 1.12;
         margin: 0 0 28px;
         text-wrap: balance;
       }
-      p { margin: 0 0 22px; font-size: 19px; }
-      .lead { font-size: 21px; color: #f2f6fc; }
+      p { margin: 0 0 20px; font-size: 17px; }
+      .lead { font-size: 18px; color: #f2f6fc; }
       strong { color: #fff; font-weight: 600; }
       em.mint { color: var(--mint); font-style: normal; }
       .callout {
@@ -191,63 +192,64 @@
       <h1>A letter to anyone who has ever paused before uploading a file.</h1>
 
       <p class="lead">
-        You know the moment. You have a PDF that matters — a signed contract, a payslip, a
-        medical scan, a scan of your passport — and you just need to <em class="mint">do one small
-        thing</em> to it. Merge it. Shrink it. Pull the text out. So you search, you land on some
-        free online converter, you pick your file… and you hesitate.
+        You know the moment. You have a PDF that matters. Maybe it's a signed contract, a payslip,
+        a medical scan, a photo of your passport. And you just need to <em class="mint">do one
+        small thing</em> to it. Merge it. Shrink it. Pull the text out. So you search, you land on
+        some free online converter, you choose your file, and then you stop.
       </p>
 
       <p>
-        Where is this actually going? Whose server is it landing on? How long do they keep it? Who
-        else can read it? You don't know. Nobody tells you. That hesitation — that small, sane
-        flicker of doubt — is the entire reason DoxDock exists.
+        Where is it actually going? Whose server does it land on? How long do they keep it? Who
+        else gets to read it? You don't know, and nobody tells you. That little pause you feel is
+        completely reasonable, and honestly, it's the whole reason I built DoxDock.
       </p>
 
       <p>
-        So I built the opposite of that. <strong>In DoxDock, nothing you open ever leaves your
-        machine.</strong> There is no upload. There is no server waiting for your document. There
-        are no accounts, no sign-ups, no trackers, no analytics quietly noting what you do. Every
-        conversion happens inside your own browser, on your own device, using your own processor.
-        Your file is opened, worked on, and handed back — and it never once touches the network.
+        So I made the opposite kind of tool. <strong>In DoxDock, nothing you open ever leaves your
+        machine.</strong> There's no upload. There's no server sitting somewhere waiting for your
+        document. No accounts, no sign-ups, no trackers, no analytics quietly writing down what you
+        do. Every conversion happens right inside your own browser, on your own device, using your
+        own processor. Your file is opened, worked on, and handed straight back to you. It never
+        once touches the network.
       </p>
 
       <p>
         I didn't want you to have to <em class="mint">trust</em> me on that. Trust is what every
-        other tool asks for, and trust is exactly what you can't verify. So DoxDock is built to be
-        <strong>provable</strong> instead.
+        other tool asks for, and trust is exactly the thing you can't actually check. So I built
+        DoxDock to be <strong>provable</strong> instead.
       </p>
 
       <div class="callout">
-        <h2>Don't trust me — check</h2>
+        <h2>Don't trust me. Check.</h2>
         <ol>
-          <li>Open your browser's <strong>Network</strong> tab and use any tool. You'll see requests only to the app itself — never an outside server.</li>
-          <li>Or turn off your Wi-Fi entirely and reload. Everything still works, offline, forever.</li>
-          <li>Or read the code. It's open source under the MIT license. The rule that forbids any network request — <code>connect-src 'self'</code> — is right there in the page's security policy.</li>
+          <li>Open your browser's <strong>Network</strong> tab and use any tool. You'll see requests only to the app itself, never to an outside server.</li>
+          <li>Or turn off your Wi-Fi entirely and reload. Everything still works, offline, for as long as you like.</li>
+          <li>Or read the code. It's open source under the MIT license, and the rule that forbids any network request, <code>connect-src 'self'</code>, is sitting right there in the page's security policy.</li>
         </ol>
       </div>
 
       <p>
-        The whole thing is free and open source, and that's deliberate too. Privacy shouldn't be a
-        premium tier. A tool that touches your most private documents should be one you — or anyone
-        cleverer than me — can open up, inspect, audit, fork, and host yourself. If you don't
-        believe the promise, you should be able to <em class="mint">prove it false</em>. I'm
-        betting you can't.
+        The whole thing is free and open source, and that part is deliberate too. Privacy
+        shouldn't be a premium tier. A tool that touches your most private documents should be one
+        that you, or anyone cleverer than me, can open up, read, audit, fork, and run yourself. If
+        you don't believe the promise, you should be able to <em class="mint">prove it false</em>.
+        I'm quietly confident you can't.
       </p>
 
       <p>
-        That's the whole ideology, really. Useful tools shouldn't come at the cost of your privacy.
-        The safest place for your files is the device already in your hands. And software that makes
-        a promise about your data should let you verify it, not just believe it.
+        That's really the whole idea. Useful tools shouldn't cost you your privacy. The safest place
+        for your files is the device already in your hands. And any software that makes a promise
+        about your data should let you check it for yourself instead of asking you to just believe.
       </p>
 
       <p>
-        Use it. Try to break it. Tell me where it falls short, or send a pull request and make it
-        better. It's yours as much as mine now.
+        So please, use it. Try to break it. Tell me where it falls short, or send a pull request and
+        make it better. It's as much yours as mine now.
       </p>
 
       <div class="sign">
-        <p class="name">Mithun</p>
-        <p class="role">CREATOR OF DOXDOCK</p>
+        <p class="name">Mithun Srinivas</p>
+        <p class="role">Creator of DoxDock</p>
       </div>
 
       <hr />
