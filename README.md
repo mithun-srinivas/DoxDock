@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![Created by Mithun S](https://img.shields.io/badge/Created%20by-Mithun%20S-4f46e5?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mithun-srinivas)
-[![Supported by OSCode Community](https://img.shields.io/badge/Supported%20by-OSCode%20Community-F59E0B?style=for-the-badge)](https://github.com/OSCode-Community)
+[![Supported by OSCode Community](https://img.shields.io/badge/Supported%20by-OSCode%20Community-00C9FF?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAE5klEQVRIDbVWXWwUVRQ%2B996Z7dp2qQWxUQilFgr1QQuxohKIBNw21ZholUoMmqjwogaJJvXFSK0xEH8SHpTgQ9NgfKk%2BWEnQNMqTmvrzoIkhyBpiiJggEdMW2u7uzD1%2BZ2Z3dmZpscb07Ozs%2FTn3%2B84959xzV9G3TIspejHBBXuhBIpIEav%2FvtuFEpBAK6UJjw46C9y68%2B96sAGQhpRPVCiChlMOGSJ0bfBcE2JuAjgEOPJJk%2FnzL%2Frpazs%2Bxr%2F%2BaGfzmNHpGrOmg%2B7u4Y5OvmE55dmy0kwWplzlQzVPFrHrKFWY5dEPaeSwOfuzRwyLISFCjfiLqLW9uPMF9cAu%2F7oMgRpRCnTir6sJoMMmpSl3Wr%2B1n7%2F7HG5goIn%2FyWOZxXotXQ4%2BxJuy6sX3qK3Vl%2B1VSzWBZqsdbXPjpv9J%2F9yZEE9SCF84QZnyThJAzuq1dHCE2jo8xCgp1VnERtPU32bgee%2FcGaK0WAvkAF33PKE3bU0uL%2FX4t5x67Vl%2FYkKCn5QkgSIxcfiQf%2FqHwPY8POOQg%2FRPd2Zp4F114y3gkkRNimTTqW946HUynlLoVSSpil7ulB45AiKohD72yTe1S2b3D%2BpMPW%2FYWgN08VdCYA1SwHx81Mn9QjqBWenIKXVInRjmmcloNRIVW6KunbSu05%2B0avtD3j3d5TBU1ob6PDPlHD8GkLiUlGASnK%2BuTPJXn3liTuh8cb9seEuvxTljbWszanCI9r3prmoT4qTLoZkfHzOXp%2BHnSEoE0LUp4vM5e%2FF8NBc0mNP1%2FsrVpUGPiw1N9PRL3jsfOa3rlBzlisBK9%2BIffOFsnLeyTbTU1ATNXKmskKNDJl3n1uBgiTCC7pOdJlp7m%2FfMYNXBgpVqZspOXJKsK0uFIBjBTGxShhQXC75fSW%2FxHYBBs%2FpW65aIg7XywkGUkhWTGAHmtMYTm4Wbmacn%2BMLvIa%2BQRzbMTlKMuLQKCI6O2xiDA9jSJl3XiCEpC6GgJDDrk6PA1Yqlqlp2LRmcju9PKlsdA6q7nhqb4qGJkNh6pFasUS2tGAJmmSHIp0%2BOmhMfOMVJq4GorJ5xvhi1x94Wd8UEhtvm9XRzCyERyxIBKbbE2rH39cmUFLVAGC32inn9ylPel8epxqCA89inxf4%2BvnwpPI%2FQCyqhHD93x4O4LQAVSUQgBUc4tj3MK7CJMkFwo4hP65ea9o0M0zxft280mUaMIWp4gwZeRz2xK5vz23upGA6XKCoEMuCTarqJ9r4q68qCNth4R6%2Ffsl4VLfnaNrfabF9gQmgqLhxrELe9A4zl82ZRgKhwPd2%2F2%2FY8lpKN4zGIrjYOb%2BkiXBIIABLX1bw56zgupiGoAA5Tsftx1bObC9omK1VyB%2BIQsUz1v2%2B7d7k4V7Jdq1e10YZ7bQEzgd1o3L6ZW9qNBEi%2BtO0R%2FfIRxDCcL29efqsJBAP3Vl3GHhjy9x3k2lrUFe7u85c0kA8s0ZdQZRqcbB86OOf03KHiG8NebV0yaQUdYmjPgaARvcQvkqfKpTvuSt3ZbXWBu%2FbwsuXBvSNqYWSpfplvre4%2FbLOPkkrFcz%2FCCpTn%2BuuoQABzkRgp%2FF0hVUguR1jIYsK6ypcya%2BPnJo6OdrJ4lyfhfD%2BMVVCEAseX5%2FCLy5mCIydRQW8OP0fa15qLlOZrVBPPpfe%2FCOYCrB5bdIJ%2FANB%2B4OK%2FhNbJAAAAAElFTkSuQmCC&logoColor=white)](https://github.com/OSCode-Community)
 
 **Offline-first document & image tools that run 100% in your browser. Nothing you open ever leaves your machine.**
 
@@ -150,6 +150,14 @@ DoxDock uses a **plugin/registry** architecture. Each operation is a self-contai
 ## Contributing
 
 PRs welcome — especially new operations. See [CONTRIBUTING.md](CONTRIBUTING.md) for a step-by-step guide. The one rule that can never break: **no runtime network requests.**
+
+## Supported by
+
+<a href="https://github.com/OSCode-Community">
+  <img src="https://avatars.githubusercontent.com/u/104100526?s=200&v=4" alt="OSCode Community" width="72" height="72" />
+</a>
+
+Proudly supported by the **[OSCode Community](https://github.com/OSCode-Community)** — an open-source developer community. If DoxDock is useful to you, a ⭐ on the repo helps others find it.
 
 ## License
 
