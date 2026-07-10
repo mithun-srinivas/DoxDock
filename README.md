@@ -4,7 +4,7 @@
 
 DoxDock is a collection of ~20 everyday PDF and image utilities — merge, split, compress, convert, watermark, extract text, and more — built on one hard rule: **your files never get uploaded anywhere.** Every operation runs client-side, on your device, using your browser's own CPU. No servers, no accounts, no analytics, no network.
 
-It exists for the moment you have a sensitive PDF — a contract, a payslip, a medical scan — and just need to _do one thing_ to it without handing it to a random online converter. Read the [ideology letter]([public/ideology.html](https://doxdock.vercel.app/ideology.html)) for the why.
+It exists for the moment you have a sensitive PDF — a contract, a payslip, a medical scan — and just need to _do one thing_ to it without handing it to a random online converter. Read the [ideology letter](https://doxdock.vercel.app/ideology.html) for the why.
 
 > **Runs entirely in your browser — no uploads, no network.**
 
