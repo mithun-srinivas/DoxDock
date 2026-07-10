@@ -4,5 +4,5 @@ services:
     image: doxdock:latest
     container_name: doxdock
     ports:
-      - "8080:80"
+      - "8791:80"
     restart: unless-stopped
