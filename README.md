@@ -8,6 +8,8 @@ It exists for the moment you have a sensitive PDF — a contract, a payslip, a m
 
 > **Runs entirely in your browser — no uploads, no network.**
 
+<img width="1723" height="982" alt="image" src="https://github.com/user-attachments/assets/e8212de6-c403-42c4-b02e-172e4d4ec2fd" />
+
 ---
 
 ## Why it's "provably local" — and how to verify
