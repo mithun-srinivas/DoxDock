@@ -260,6 +260,22 @@ export default function EditPdf() {
     return () => window.removeEventListener('keydown', onKey)
   }, [selectedId, editingId, commit])
 
+  // When an item is selected, sync the toolbar controls to reflect its style.
+  useEffect(() => {
+    if (!selectedId) return
+    const a = annos.find((x) => x.id === selectedId)
+    if (!a) return
+    if (a.color) setColor(a.color)
+    if (a.width != null) setStrokeWidth(a.width)
+    if (a.type === 'text') {
+      setFontSize(a.fontSize)
+      setFontFamily(a.fontFamily || 'Helvetica')
+      setBold(!!a.bold)
+      setItalic(!!a.italic)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId])
+
   const scale = dims?.scale || 1
   const localPt = (e) => {
     const r = overlayRef.current.getBoundingClientRect()
@@ -270,6 +286,8 @@ export default function EditPdf() {
   }
 
   const updateAnno = (id, patch) => setAnnos((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)))
+  // Apply a style change to the currently-selected annotation (if any).
+  const patchSelected = (patch) => selectedId && updateAnno(selectedId, patch)
 
   // ── erase (delete added items under the cursor) ──
   const distToSeg = (px, py, x1, y1, x2, y2) => {
@@ -425,7 +443,13 @@ export default function EditPdf() {
   const pageAnnos = annos.filter((a) => a.page === pageIndex)
   const svgAnnos = pageAnnos.filter((a) => a.type === 'draw' || a.type === 'line')
   const boxAnnos = pageAnnos.filter((a) => a.type !== 'draw' && a.type !== 'line')
-  const needsStroke = ['draw', 'rect', 'ellipse', 'line'].includes(tool)
+  // Which controls to show: driven by the selected item's type when one is
+  // selected, otherwise by the active tool. This lets you restyle existing items.
+  const selectedAnno = annos.find((a) => a.id === selectedId)
+  const ctxType = selectedAnno ? selectedAnno.type : tool
+  const showColor = ['text', 'draw', 'highlight', 'rect', 'ellipse', 'line'].includes(ctxType)
+  const showStroke = ['draw', 'rect', 'ellipse', 'line'].includes(ctxType)
+  const showText = ctxType === 'text'
   const isStandalone = new URLSearchParams(window.location.search).get('standalone') === '1'
 
   const goodToKnow = (
@@ -474,30 +498,56 @@ export default function EditPdf() {
               ))}
             </div>
 
-            <div className="mx-1 h-6 w-px bg-slate-200 dark:bg-slate-700" />
+            {(showColor || showStroke || showText) && <div className="mx-1 h-6 w-px bg-slate-200 dark:bg-slate-700" />}
 
-            <label className="flex items-center gap-1.5" title="Color">
-              <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-8 w-9 cursor-pointer rounded border border-slate-300 bg-transparent p-0.5 dark:border-slate-600" />
-            </label>
-            {needsStroke && (
-              <label className="flex items-center gap-1.5 text-xs text-slate-500">
-                Width
-                <input type="range" min="1" max="12" value={strokeWidth} onChange={(e) => setStrokeWidth(Number(e.target.value))} className="w-20 accent-brand-600" />
+            {showColor && (
+              <label className="flex items-center gap-1.5" title="Color">
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) => { setColor(e.target.value); patchSelected({ color: e.target.value }) }}
+                  className="h-8 w-9 cursor-pointer rounded border border-slate-300 bg-transparent p-0.5 dark:border-slate-600"
+                />
               </label>
             )}
-            {tool === 'text' && (
+            {showStroke && (
+              <label className="flex items-center gap-1.5 text-xs text-slate-500">
+                Width
+                <input
+                  type="range"
+                  min="1"
+                  max="12"
+                  value={strokeWidth}
+                  onChange={(e) => { const v = Number(e.target.value); setStrokeWidth(v); patchSelected({ width: v }) }}
+                  className="w-20 accent-brand-600"
+                />
+              </label>
+            )}
+            {showText && (
               <>
-                <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="field-input h-8 w-28 py-1" title="Font">
+                <select
+                  value={fontFamily}
+                  onChange={(e) => { setFontFamily(e.target.value); patchSelected({ fontFamily: e.target.value }) }}
+                  className="field-input h-8 w-28 py-1"
+                  title="Font"
+                >
                   {FONT_OPTIONS.map((f) => (
                     <option key={f} value={f}>{f}</option>
                   ))}
                 </select>
                 <label className="flex items-center gap-1.5 text-xs text-slate-500">
                   Size
-                  <input type="number" min="6" max="96" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="field-input h-8 w-16 py-1" />
+                  <input
+                    type="number"
+                    min="6"
+                    max="96"
+                    value={fontSize}
+                    onChange={(e) => { const v = Number(e.target.value); setFontSize(v); patchSelected({ fontSize: v }) }}
+                    className="field-input h-8 w-16 py-1"
+                  />
                 </label>
-                <button type="button" title="Bold" onClick={() => setBold((b) => !b)} className={'flex h-8 w-8 items-center justify-center rounded-lg font-bold ' + (bold ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>B</button>
-                <button type="button" title="Italic" onClick={() => setItalic((i) => !i)} className={'flex h-8 w-8 items-center justify-center rounded-lg italic ' + (italic ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>I</button>
+                <button type="button" title="Bold" onClick={() => { const v = !bold; setBold(v); patchSelected({ bold: v }) }} className={'flex h-8 w-8 items-center justify-center rounded-lg font-bold ' + (bold ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>B</button>
+                <button type="button" title="Italic" onClick={() => { const v = !italic; setItalic(v); patchSelected({ italic: v }) }} className={'flex h-8 w-8 items-center justify-center rounded-lg italic ' + (italic ? 'bg-brand-600 text-white' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>I</button>
               </>
             )}
 
