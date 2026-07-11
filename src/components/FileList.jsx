@@ -10,6 +10,12 @@ export default function FileList({
   onClear,
   icon = 'fileText',
 }) {
+
+  const totalFileSize = (files) => {
+    const totalSize = files.reduce((acc, file) => acc + (file.size || 0), 0)
+    return formatBytes(totalSize)
+  }
+
   if (!files.length) return null
 
   return (
@@ -17,6 +23,9 @@ export default function FileList({
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
           {files.length} file{files.length === 1 ? '' : 's'} selected
+        </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Total: {totalFileSize(files)}
         </p>
         {onClear && (
           <button type="button" onClick={onClear} className="btn-ghost px-2 py-1 text-xs">
