@@ -6,11 +6,13 @@ import Note from '../../components/Note.jsx'
 import Icon from '../../components/Icon.jsx'
 import DownloadButton from '../../components/DownloadButton.jsx'
 import { useJob } from '../../hooks/useJob.js'
+import { dedupeFiles, skippedNotice } from '../../lib/dedupeFiles.js'
 import { mergePdfs } from './helpers.js'
 
 export default function MergePdfs() {
   const [files, setFiles] = useState([])
-  const { running, progress, error, setError, result, run, reset } = useJob();
+  const [notice, setNotice] = useState('')
+  const { running, progress, error, result, run, reset } = useJob()
 
   const add = (incoming) => {
     const newFiles = incoming.filter((f) =>
@@ -26,6 +28,12 @@ export default function MergePdfs() {
     ]);
     reset();
   };
+    const pdfs = incoming.filter((f) => /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name))
+    const { unique, skipped } = dedupeFiles(files, pdfs)
+    if (unique.length) setFiles((prev) => [...prev, ...unique])
+    setNotice(skippedNotice(skipped))
+    reset()
+  }
   const move = (from, to) =>
     setFiles((prev) => {
       const next = [...prev]
@@ -42,7 +50,7 @@ export default function MergePdfs() {
 
       {files.length > 0 && (
         <>
-          <FileList files={files} onMove={move} onRemove={(i) => setFiles((p) => p.filter((_, idx) => idx !== i))} onClear={() => { setFiles([]); reset() }} />
+          <FileList files={files} onMove={move} onRemove={(i) => setFiles((p) => p.filter((_, idx) => idx !== i))} onClear={() => { setFiles([]); setNotice(''); reset() }} />
           <div className="flex flex-wrap items-center gap-3">
             <button type="button" className="btn-primary" onClick={merge} disabled={running || files.length < 2}>
               <Icon name="layers" className="h-4 w-4" />
@@ -53,8 +61,8 @@ export default function MergePdfs() {
         </>
       )}
 
+      {notice && <Note type="warning">{notice}</Note>}
       {running && progress && <Progress value={progress.value} message={progress.message} />}
       {error && <Note type="error" title="Merge failed">{error}</Note>}
     </div>
   )
-}
