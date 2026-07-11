@@ -13,18 +13,16 @@ export default function MergePdfs() {
   const { running, progress, error, setError, result, run, reset } = useJob();
 
   const add = (incoming) => {
-    const duplicate = incoming.find((f) =>
-      files.some(
-        (existing) => existing.name === f.name && existing.size === f.size,
-      ),
+    const newFiles = incoming.filter((f) =>
+      !files.some((existing) => existing.name === f.name && existing.size === f.size)
     );
-    if (duplicate) {
-      setError(`Duplicate file: ${duplicate.name}`);
+    if (newFiles.length === 0 && incoming.length > 0) {
+      setError("All selected files are duplicates.");
       return;
     }
     setFiles((prev) => [
       ...prev,
-      ...incoming.filter((f) => /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name)),
+      ...newFiles.filter((f) => /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name)),
     ]);
     reset();
   };
