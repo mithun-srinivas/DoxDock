@@ -10,6 +10,7 @@ import Home from './components/Home.jsx'
 import OSCodeNavBadge from './components/OSCodeNavBadge.jsx'
 import { useTheme } from './hooks/useTheme.js'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
+import { useDocumentTitle } from './hooks/useDocumentTitle.js'
 import { getOperation } from './registry/registry.js'
 
 // Hash routing. An empty hash (or #/ or #/home) means the Home landing page
@@ -45,6 +46,8 @@ export default function App() {
   const [collapsed, setCollapsed] = useLocalStorage('doxdock:sidebarCollapsed', false)
 
   const activeOp = activeId ? getOperation(activeId) : null
+
+  useDocumentTitle(activeOp ? `${activeOp.name} — DoxDock` : 'DoxDock')
 
   // Global Cmd/Ctrl+K to open the palette.
   useEffect(() => {
@@ -218,16 +221,28 @@ export default function App() {
               DoxDock processes everything on your device. No file you open is ever uploaded — the
               app makes zero network requests at runtime. Open source under the MIT license.
             </p>
-            <p className="flex items-center gap-1.5">
-              Supported by
+            <p className="flex items-center gap-3">
+              <span className="flex items-center gap-1.5">
+                Supported by
+                <a
+                  href="https://github.com/OSCode-Community"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-300"
+                >
+                  <img src="/oscode.png" alt="" className="h-4 w-4 rounded-sm" />
+                  OSCode Community
+                </a>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">&bull;</span>
               <a
-                href="https://github.com/OSCode-Community"
+                href="https://github.com/mithun-srinivas/DoxDock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-300"
               >
-                <img src="/oscode.png" alt="" className="h-4 w-4 rounded-sm" />
-                OSCode Community
+                <Icon name="github" className="h-3.5 w-3.5" />
+                Star us on GitHub
               </a>
             </p>
           </footer>

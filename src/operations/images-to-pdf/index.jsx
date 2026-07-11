@@ -16,18 +16,16 @@ export default function ImagesToPdf() {
   const { running, progress, error, setError, result, run, reset } = useJob();
 
   const addFiles = (incoming) => {
-    const duplicate = incoming.find((f) =>
-      files.some(
-        (existing) => existing.name === f.name && existing.size === f.size,
-      ),
+    const newFiles = incoming.filter((f) =>
+      !files.some((existing) => existing.name === f.name && existing.size === f.size)
     );
-    if (duplicate) {
-      setError(`Duplicate file: ${duplicate.name}`);
+    if (newFiles.length === 0 && incoming.length > 0) {
+      setError("All selected files are duplicates.");
       return;
     }
     setFiles((prev) => [
       ...prev,
-      ...incoming.filter((f) => f.type.startsWith("image/")),
+      ...newFiles.filter((f) => f.type.startsWith("image/")),
     ]);
     reset();
   };
