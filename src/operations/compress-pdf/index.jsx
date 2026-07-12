@@ -14,7 +14,7 @@ export default function CompressPdf() {
   const [mode, setMode] = useState('rasterize')
   const [dpi, setDpi] = useState(120)
   const [quality, setQuality] = useState(0.7)
-  const { running, progress, error, result, run, reset } = useJob()
+  const { running, progress, error, result, run, reset, cancel, slow } = useJob()
 
   const pick = (files) => {
     setFile(files[0])
@@ -75,6 +75,13 @@ export default function CompressPdf() {
               <Icon name="compress" className="h-4 w-4" />
               Compress PDF
             </button>
+            {running && slow && (
+              <button type="button" onClick={cancel}
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-red-500 bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 hover:border-red-600 transition-colors">
+                <Icon name="x" className="h-4 w-4" />
+                Cancel
+              </button>
+            )}
             {result && <DownloadButton result={result} />}
           </div>
         </>
