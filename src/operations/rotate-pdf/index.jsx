@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Dropzone from '../../components/Dropzone.jsx'
 import Progress from '../../components/Progress.jsx'
 import Note from '../../components/Note.jsx'
 import Icon from '../../components/Icon.jsx'
 import DownloadButton from '../../components/DownloadButton.jsx'
 import { useJob } from '../../hooks/useJob.js'
-import { formatBytes, baseName } from '../../lib/format.js'
+import { formatBytes, baseName, parsePageRanges } from '../../lib/format.js'
 import { rotatePdf } from './helpers.js'
 import { usePdfPageCount } from '../../hooks/usePdfPageCount.js'
 
@@ -15,6 +15,22 @@ export default function RotatePdf() {
   const [range, setRange] = useState('')
   const { running, progress, error, result, run, reset } = useJob()
   const { pageCount } = usePdfPageCount(file)
+
+  // Range is optional here — empty means "all pages" and is valid. Only
+  // validate (and only show an error) once the user has typed something.
+  const rangeError = useMemo(() => {
+    if (!range.trim() || pageCount == null) return null
+    const groups = range.split(',').map((s) => s.trim()).filter(Boolean)
+    for (const g of groups) {
+      try {
+        const pages = parsePageRanges(g, pageCount)
+        if (!pages.length) return `"${g}" has no valid pages (document has ${pageCount}).`
+      } catch (err) {
+        return err.message
+      }
+    }
+    return null
+  }, [range, pageCount])
 
   const pick = (files) => {
     setFile(files[0])
@@ -61,13 +77,15 @@ export default function RotatePdf() {
                   placeholder="All pages — or e.g. 1-3,5"
                   value={range}
                   onChange={(e) => setRange(e.target.value)}
+                  aria-invalid={!!rangeError}
                 />
+                {rangeError && <span className="block text-xs text-red-600 dark:text-red-400">{rangeError}</span>}
               </label>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button type="button" className="btn-primary" onClick={go} disabled={running}>
+            <button type="button" className="btn-primary" onClick={go} disabled={running || !!rangeError}>
               <Icon name="rotate" className="h-4 w-4" />
               Rotate PDF
             </button>
