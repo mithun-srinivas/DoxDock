@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # JavaScript dependencies (package.json / package-lock.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Batch minor + patch bumps into one PR to cut noise; majors stay separate.
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Keep GitHub Actions used in workflows up to date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "chore(ci)"
