@@ -1,6 +1,6 @@
 {
   "name": "doxdock",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Offline-first, 100% client-side document & image utilities. Nothing you upload ever leaves your machine.",
   "type": "module",
   "license": "MIT",
