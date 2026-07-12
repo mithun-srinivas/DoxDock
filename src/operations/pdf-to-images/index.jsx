@@ -14,7 +14,7 @@ export default function PdfToImages() {
   const [format, setFormat] = useState('png')
   const [scale, setScale] = useState(2)
   const [range, setRange] = useState('')
-  const { running, progress, error, result, run, reset } = useJob()
+  const { running, progress, error, result, run, reset, slow, cancel } = useJob()
   const { pageCount } = usePdfPageCount(file)
 
   // Range is optional here — empty means "all pages" and is valid. Only
@@ -85,10 +85,19 @@ export default function PdfToImages() {
             </div>
           </div>
 
-          <button type="button" className="btn-primary" onClick={convert} disabled={running || !!rangeError}>
-            <Icon name="image" className="h-4 w-4" />
-            Convert to images
-          </button>
+          <div className="flex items-center gap-3">
+            <button type="button" className="btn-primary" onClick={convert} disabled={running || !!rangeError}>
+              <Icon name="image" className="h-4 w-4" />
+              Convert to images
+            </button>
+            {running && slow && (
+              <button type="button" onClick={cancel}
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-red-500 bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 hover:border-red-600 transition-colors">
+                <Icon name="x" className="h-4 w-4" />
+                Cancel
+              </button>
+            )}
+          </div>
         </>
       )}
 

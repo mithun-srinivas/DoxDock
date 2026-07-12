@@ -10,7 +10,7 @@ import { pdfToWord } from './helpers.js'
 
 export default function PdfToWord() {
   const [file, setFile] = useState(null)
-  const { running, progress, error, result, run, reset } = useJob()
+  const { running, progress, error, result, run, reset, slow, cancel } = useJob()
 
   const pick = (files) => {
     setFile(files[0])
@@ -34,6 +34,13 @@ export default function PdfToWord() {
               <Icon name="fileOut" className="h-4 w-4" />
               Convert to Word
             </button>
+            {running && slow && (
+              <button type="button" onClick={cancel}
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-red-500 bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 hover:border-red-600 transition-colors">
+                <Icon name="x" className="h-4 w-4" />
+                Cancel
+              </button>
+            )}
             {result && <DownloadButton result={result} />}
           </div>
         </>

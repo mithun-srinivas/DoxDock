@@ -1,10 +1,11 @@
 import { useState, useCallback, useRef } from 'react'
 
-// Standardizes the run/progress/error/result lifecycle every operation shares.
-// The worker/async function receives a `setProgress(0..1, message?)` callback.
+const SLOW_THRESHOLD = 500 // ms before cancel button appears
+
 export function useJob() {
   const [running, setRunning] = useState(false)
-  const [progress, setProgress] = useState(null) // { value, message } | null
+  const [slow, setSlow] = useState(false)
+  const [progress, setProgress] = useState(null)
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
   const runId = useRef(0)
@@ -12,9 +13,15 @@ export function useJob() {
   const run = useCallback(async (fn) => {
     const id = ++runId.current
     setRunning(true)
+    setSlow(false)
     setError(null)
     setResult(null)
     setProgress({ value: null, message: 'Starting…' })
+
+    const slowTimer = setTimeout(() => {
+      if (runId.current === id) setSlow(true)
+    }, SLOW_THRESHOLD)
+
     const onProgress = (value, message) => {
       if (runId.current === id) setProgress({ value, message })
     }
@@ -29,8 +36,10 @@ export function useJob() {
       }
       return null
     } finally {
+      clearTimeout(slowTimer)
       if (runId.current === id) {
         setRunning(false)
+        setSlow(false)
         setProgress(null)
       }
     }
@@ -39,10 +48,13 @@ export function useJob() {
   const reset = useCallback(() => {
     runId.current++
     setRunning(false)
+    setSlow(false)
     setProgress(null)
     setError(null)
     setResult(null)
   }, [])
 
-  return { running, progress, error, result, run, reset, setError }
+  const cancel = reset
+
+  return { running, slow, progress, error, result, run, reset, cancel, setError }
 }
