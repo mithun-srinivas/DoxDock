@@ -1,5 +1,7 @@
 import { useState, useCallback, useRef } from 'react'
 
+// Standardizes the run/progress/error/result lifecycle every operation shares.
+// The worker/async function receives a `setProgress(0..1, message?)` callback.
 const SLOW_THRESHOLD = 500 // ms before cancel button appears
 
 export function useJob() {
