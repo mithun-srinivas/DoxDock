@@ -2,6 +2,35 @@
 
 Thanks for helping build tools people can trust with their private files. Contributions of all kinds are welcome — new operations, bug fixes, accessibility improvements, docs.
 
+## Contribution workflow
+
+Please follow these steps so work doesn't get duplicated and PRs are easy to review.
+
+1. **Find an issue.** Browse the [open issues](https://github.com/mithun-srinivas/DoxDock/issues) — the ones labelled `good first issue` are a great place to start.
+2. **Claim it first.** Before you write any code, **comment on the issue and ask to be assigned to it.** Please wait until a maintainer assigns it to you before starting, so two people don't build the same thing.
+3. **Work on it.** Once it's assigned to you, create a branch and make your change (see the guides below).
+4. **Open a pull request.** When it's ready, open a PR against `main`. In the PR description, please include:
+   - **Which issue it closes** — tag it like `Closes #12` so it links to the issue and closes it automatically when merged.
+   - **What changed** — a short, plain explanation of what you did and why.
+   - **Acceptance criteria** — copy the checklist from the issue and tick off each item you've met.
+   - **Proof (if useful)** — a screenshot or short screen recording of the feature working. For anything touching files, a DevTools → Network tab screenshot showing **no external requests** is very welcome.
+
+### PR description template
+
+```markdown
+Closes #<issue-number>
+
+**What changed**
+- …
+
+**Acceptance criteria** (from the issue)
+- [x] …
+- [x] …
+
+**Proof**
+<screenshot / recording, and a Network-tab shot showing zero external requests if relevant>
+```
+
 ## The one unbreakable rule
 
 **No runtime network requests. Ever.**
