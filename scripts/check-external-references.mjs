@@ -8,17 +8,20 @@
 //
 // Allowed patterns (not flagged):
 //   - github.com/mithun-srinivas/DoxDock  (documentation links)
-//   - doxdock.vercel.app                   (our own deployment)
-//   - Localhost, `self`, or relative URLs
-//   - data: and blob: URIs (in-browser generated content)
+//   - github.com/OSCode-Community         (supporter link)
+//   - doxdock.vercel.app                  (our own deployment)
+//   - opensource.org                      (license reference)
+//   - Localhost, `self`, or relative URLs; data: and blob: URIs
+//
+// Uses only Node built-ins (no `glob`) so it runs in CI without `npm install`.
 
-import { readFileSync } from 'fs'
-import { globSync } from 'glob'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import { readFileSync, readdirSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const root = path.resolve(__dirname, '..')
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const SRC = path.join(root, 'src')
+const EXTENSIONS = new Set(['.js', '.jsx', '.html', '.css'])
 
 const ALLOWED_HOSTS = [
   'github.com/mithun-srinivas/DoxDock',
@@ -27,26 +30,24 @@ const ALLOWED_HOSTS = [
   'opensource.org',
 ]
 
-// Patterns that look like external URLs in source code.
-// Avoid matching relative imports, data:/blob: URIs, and template literals.
-const URL_RE =
-  /(?:https?:\/\/)([^\s"'`)>\]})]+)/gi
+// Absolute http(s) URLs; captures host+path so we can allowlist our own hosts.
+const URL_RE = /(?:https?:\/\/)([^\s"'`)>\]}]+)/gi
 
-const IGNORE_PATHS = [
-  'node_modules/',
-  'dist/',
-  '.git/',
-  'public/',
-  'package-lock.json',
-  'scripts/check-external-references.mjs',
-]
-
-const files = globSync('src/**/*.{js,jsx,html,css}', { cwd: root, ignore: IGNORE_PATHS })
+function walk(dir) {
+  const out = []
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) out.push(...walk(full))
+    else if (EXTENSIONS.has(path.extname(entry.name))) out.push(full)
+  }
+  return out
+}
 
 let violations = 0
 
-for (const file of files) {
-  const content = readFileSync(path.join(root, file), 'utf-8')
+for (const abs of walk(SRC)) {
+  const rel = path.relative(root, abs)
+  const content = readFileSync(abs, 'utf-8')
   let match
   URL_RE.lastIndex = 0
   while ((match = URL_RE.exec(content)) !== null) {
@@ -55,7 +56,7 @@ for (const file of files) {
     const allowed = ALLOWED_HOSTS.some((a) => host.startsWith(a) || host.endsWith(a))
     if (!allowed) {
       const line = content.slice(0, match.index).split('\n').length
-      console.error(`  FAIL  ${file}:${line}  ${url}`)
+      console.error(`  FAIL  ${rel}:${line}  ${url}`)
       violations++
     }
   }
