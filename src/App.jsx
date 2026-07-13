@@ -12,6 +12,7 @@ import { useTheme } from './hooks/useTheme.js'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
 import { useDocumentTitle } from './hooks/useDocumentTitle.js'
 import { getOperation } from './registry/registry.js'
+import { emitFileDrop } from './lib/fileDropBus.js'
 
 // Hash routing. An empty hash (or #/ or #/home) means the Home landing page
 // (activeId === null); #/<id> opens that tool.
@@ -43,6 +44,7 @@ export default function App() {
   const [activeId, select] = useHashSelection()
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const [collapsed, setCollapsed] = useLocalStorage('doxdock:sidebarCollapsed', false)
 
   const activeOp = activeId ? getOperation(activeId) : null
@@ -59,6 +61,42 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    let dragCounter = 0
+
+    const onDragEnter = (e) => {
+      e.preventDefault()
+      dragCounter++
+      if (e.dataTransfer?.types?.includes('Files')) setIsDragging(true)
+    }
+    const onDragOver = (e) => { e.preventDefault() }
+    const onDragLeave = (e) => {
+      e.preventDefault()
+      dragCounter--
+      if (dragCounter <= 0) { dragCounter = 0; setIsDragging(false) }
+    }
+    const onDrop = (e) => {
+      e.preventDefault()
+      dragCounter = 0
+      setIsDragging(false)
+      const file = e.dataTransfer?.files?.[0]
+      if (!file) return
+      emitFileDrop(file)
+    }
+
+    window.addEventListener('dragenter', onDragEnter)
+    window.addEventListener('dragover', onDragOver)
+    window.addEventListener('dragleave', onDragLeave)
+    window.addEventListener('drop', onDrop)
+
+    return () => {
+      window.removeEventListener('dragenter', onDragEnter)
+      window.removeEventListener('dragover', onDragOver)
+      window.removeEventListener('dragleave', onDragLeave)
+      window.removeEventListener('drop', onDrop)
+    }
   }, [])
 
   const handleSelect = (id) => {
