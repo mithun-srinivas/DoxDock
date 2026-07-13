@@ -1,0 +1,21 @@
+.github/workflows/ci.yml
+  s_4c8c46f2d27f4b::t_49ca870a14de75 27-30
+scripts/check-external-references.mjs
+  s_4c8c46f2d27f4b::t_c08ea0090e8d12 11-16,18-20,22-24,33-34,36-44,48-50,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "d5ae4207c73486097e182ab7cd39df7b46f1290e",
+  "prompts": {},
+  "sessions": {
+    "s_4c8c46f2d27f4b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_4c8c46f2d27f4b",
+        "model": "unknown"
+      },
+      "human_author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
