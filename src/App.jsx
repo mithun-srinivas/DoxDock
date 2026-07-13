@@ -134,6 +134,14 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col">
+      {isDragging && (
+        <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-brand-900/40 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-brand-400 bg-white/90 px-12 py-10 shadow-2xl dark:bg-slate-900/90">
+            <Icon name="upload" className="h-10 w-10 text-brand-500" />
+            <p className="text-lg font-semibold text-brand-700 dark:text-brand-300">Drop your file anywhere</p>
+          </div>
+        </div>
+      )}
       {/* Top bar */}
       <header className="z-20 flex items-center gap-3 border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
         <button
