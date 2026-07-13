@@ -1,0 +1,35 @@
+name: Bundle Size
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  size:
+    name: Check Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Report total size
+        run: |
+          TOTAL=$(du -sb dist/ | cut -f1)
+          echo "Total bundle size: $(numfmt --to=iec $TOTAL)"
+          if [ "$TOTAL" -gt $((8 * 1024 * 1024)) ]; then
+            echo "::error::Bundle size exceeds 8 MB limit ($(numfmt --to=iec $TOTAL))"
+            exit 1
+          fi
+          echo "✅ Bundle size within 8 MB limit"
