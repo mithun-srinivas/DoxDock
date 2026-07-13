@@ -24,6 +24,9 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run lint
+      # `lint` is optional until the ESLint setup lands (#41 / PR #55).
+      # `--if-present` runs it when the script exists and no-ops otherwise,
+      # so this job stays green on build alone in the meantime.
+      - run: npm run lint --if-present
 
       - run: npm run build
