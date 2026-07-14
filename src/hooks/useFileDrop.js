@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { registerFileDropHandler } from "../lib/fileDropBus";
+import { useEffect } from 'react'
+import { registerFileDropHandler } from '../lib/fileDropBus'
 
 
 export function useFileDrop(onFile){

@@ -79,6 +79,7 @@ export default function App() {
     }
     const onDrop = (e) => {
       e.preventDefault()
+      e.stopPropagation()
       dragCounter = 0
       setIsDragging(false)
       const file = e.dataTransfer?.files?.[0]
