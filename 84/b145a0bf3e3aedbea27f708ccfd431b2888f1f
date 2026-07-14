@@ -1,0 +1,19 @@
+package.json
+  s_5df8073dc463a5::t_68fd4cd06085e5 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "84b145a0bf3e3aedbea27f708ccfd431b2888f1f",
+  "prompts": {},
+  "sessions": {
+    "s_5df8073dc463a5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_5df8073dc463a5",
+        "model": "unknown"
+      },
+      "human_author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
