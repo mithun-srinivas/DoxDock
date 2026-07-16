@@ -10,15 +10,16 @@ import Home from './components/Home.jsx'
 import OSCodeNavBadge from './components/OSCodeNavBadge.jsx'
 import { useTheme } from './hooks/useTheme.js'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
-import { useDocumentTitle } from './hooks/useDocumentTitle.js'
+import { useSeo } from './hooks/useSeo.js'
 import { getOperation } from './registry/registry.js'
 import { emitFileDrop } from './lib/fileDropBus.js'
 
-// Hash routing. An empty hash (or #/ or #/home) means the Home landing page
-// (activeId === null); #/<id> opens that tool.
-function useHashSelection() {
+// Path routing for SEO — each tool gets its own crawlable URL ("/merge-pdfs").
+// "/" (or an unknown path) → Home landing page (activeId === null).
+// Legacy hash links ("/#/merge-pdfs") are redirected to the path form on load.
+function useRouteSelection() {
   const parse = () => {
-    const raw = window.location.hash.replace(/^#\/?/, '')
+    const raw = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, '')
     if (!raw || raw === 'home') return null
     return getOperation(raw) ? raw : null
   }
@@ -26,14 +27,21 @@ function useHashSelection() {
 
   const select = useCallback((id) => {
     setActiveId(id)
-    const target = id ? `#/${id}` : '#/'
-    if (window.location.hash !== target) window.location.hash = target
+    const target = id ? `/${id}` : '/'
+    if (window.location.pathname !== target) window.history.pushState({}, '', target)
   }, [])
 
   useEffect(() => {
-    const onHash = () => setActiveId(parse())
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
+    // Redirect old hash-style links ("/#/merge-pdfs") to the path form.
+    const legacy = window.location.hash.match(/^#\/?(.*)$/)
+    if (legacy) {
+      const id = legacy[1] === 'home' ? '' : legacy[1]
+      window.history.replaceState({}, '', (getOperation(id) ? `/${id}` : '/') + window.location.search)
+      setActiveId(getOperation(id) ? id : null)
+    }
+    const onPop = () => setActiveId(parse())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
   }, [])
 
   return [activeId, select]
@@ -41,7 +49,7 @@ function useHashSelection() {
 
 export default function App() {
   const [theme, setTheme] = useTheme()
-  const [activeId, select] = useHashSelection()
+  const [activeId, select] = useRouteSelection()
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -49,7 +57,7 @@ export default function App() {
 
   const activeOp = activeId ? getOperation(activeId) : null
 
-  useDocumentTitle(activeOp ? `${activeOp.name} — DoxDock` : 'DoxDock')
+  useSeo(activeOp)
 
   // Global Cmd/Ctrl+K to open the palette.
   useEffect(() => {
@@ -163,7 +171,7 @@ export default function App() {
         >
           <Icon name="panelLeft" className="h-5 w-5" />
         </button>
-        <a href="#/" className="flex items-center gap-2" onClick={() => handleSelect(null)}>
+        <a href="/" className="flex items-center gap-2" onClick={(e) => { e.preventDefault(); handleSelect(null) }}>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
             <Icon name="layers" className="h-5 w-5" />
           </span>
