@@ -15,6 +15,8 @@ export default function ExtractText() {
   const [copied, setCopied] = useState(false)
   const { running, progress, error, result, run, reset } = useJob()
   const { pageCount } = usePdfPageCount(file)
+  const wordCount = result?.text?.trim() ? result.text.trim().split(/\s+/).length : 0
+  const charCount = result?.text?.length ?? 0
 
   const pick = (files) => {
     setFile(files[0])
@@ -80,7 +82,9 @@ export default function ExtractText() {
               <Icon name="download" className="h-4 w-4" />
               Download
             </button>
-            <span className="text-xs text-slate-400">{result.pageCount} page(s)</span>
+            <span className="text-xs text-slate-400">
+            {result.pageCount} page(s) · {wordCount} words · {charCount} characters
+            </span> 
           </div>
           <textarea readOnly value={result.text} className="field-input h-80 font-mono text-xs leading-relaxed" spellCheck={false} />
         </div>
