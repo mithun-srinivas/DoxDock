@@ -17,7 +17,6 @@ export default function ExtractText() {
   const { pageCount } = usePdfPageCount(file)
   const wordCount = result?.text?.trim() ? result.text.trim().split(/\s+/).length : 0
   const charCount = result?.text?.length ?? 0
-  
 
   const pick = (files) => {
     setFile(files[0])
