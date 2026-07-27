@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument, PDFName, PDFDict, PDFArray, PDFRef } from 'pdf-lib'
 import { baseName, parsePageRanges } from '../../lib/format.js'
 
 async function subsetPdf(srcDoc, pageIndices) {
@@ -9,13 +9,78 @@ async function subsetPdf(srcDoc, pageIndices) {
   return new Blob([bytes], { type: 'application/pdf' })
 }
 
+// Greedily pack pages into groups so each rendered PDF stays at/under `limitBytes`.
+// A single page larger than the limit becomes its own (over-size) group — flagged, not dropped.
+async function packBySize(src, total, limitBytes, onProgress) {
+  const groups = []
+  let current = []
+  for (let i = 0; i < total; i++) {
+    onProgress?.(i / total, `Packing page ${i + 1} of ${total}…`)
+    const candidate = [...current, i]
+    const blob = await subsetPdf(src, candidate)
+    if (blob.size > limitBytes && current.length) {
+      // Adding page i overflows the current group: close it and start a new one with page i.
+      groups.push(current)
+      current = [i]
+    } else {
+      current = candidate
+    }
+  }
+  if (current.length) groups.push(current)
+  return groups
+}
+
+// Resolve a bookmark destination (array/dict, or a GoTo action) to the page ref it points at.
+function destPageRef(item) {
+  let dest = item.get(PDFName.of('Dest'))
+  if (!dest) {
+    const action = item.get(PDFName.of('A'))
+    if (action instanceof PDFDict) dest = action.get(PDFName.of('D'))
+  }
+  if (dest instanceof PDFArray && dest.size() > 0) {
+    const target = dest.get(0)
+    if (target instanceof PDFRef) return target
+  }
+  return null
+}
+
+// Read the top-level bookmarks (outline entries) as { title, pageIndex }, in document order.
+// Named destinations and entries we can't resolve to a concrete page ref are skipped.
+function topLevelBookmarks(src) {
+  const outlines = src.catalog.lookupMaybe(PDFName.of('Outlines'), PDFDict)
+  if (!outlines) return []
+  const refKey = (ref) => `${ref.objectNumber}R${ref.generationNumber}`
+  const pageIndexByRef = new Map()
+  src.getPages().forEach((page, index) => pageIndexByRef.set(refKey(page.ref), index))
+
+  const bookmarks = []
+  const seen = new Set()
+  let itemRef = outlines.get(PDFName.of('First'))
+  while (itemRef instanceof PDFRef && !seen.has(refKey(itemRef))) {
+    seen.add(refKey(itemRef))
+    const item = src.context.lookup(itemRef, PDFDict)
+    if (!item) break
+    const pageRef = destPageRef(item)
+    const pageIndex = pageRef ? pageIndexByRef.get(refKey(pageRef)) : undefined
+    if (pageIndex != null) {
+      const title = item.get(PDFName.of('Title'))
+      bookmarks.push({
+        title: title && typeof title.decodeText === 'function' ? title.decodeText() : `Bookmark ${bookmarks.length + 1}`,
+        pageIndex,
+      })
+    }
+    itemRef = item.get(PDFName.of('Next'))
+  }
+  return bookmarks
+}
+
 /**
  * @param {File} file
- * @param {{mode:'explode'|'ranges', ranges:string}} opts
+ * @param {{mode:'explode'|'ranges'|'size'|'bookmarks', ranges:string, sizeMb:number}} opts
  * @returns {Promise<{filename:string, blob:Blob}[]>}
  */
 export async function splitPdf(file, opts, onProgress) {
-  const { mode = 'explode', ranges = '' } = opts || {}
+  const { mode = 'explode', ranges = '', sizeMb = 5 } = opts || {}
   let src
   try {
     src = await PDFDocument.load(await file.arrayBuffer())
@@ -26,7 +91,31 @@ export async function splitPdf(file, opts, onProgress) {
   const base = baseName(file.name)
   const results = []
 
-  if (mode === 'explode') {
+  if (mode === 'size') {
+    const limitBytes = Math.max(0.05, Number(sizeMb) || 0) * 1024 * 1024
+    const groups = await packBySize(src, total, limitBytes, onProgress)
+    for (let g = 0; g < groups.length; g++) {
+      const blob = await subsetPdf(src, groups[g])
+      const over = blob.size > limitBytes ? '-oversize' : ''
+      results.push({ filename: `${base}-part${String(g + 1).padStart(2, '0')}${over}.pdf`, blob })
+    }
+  } else if (mode === 'bookmarks') {
+    const bookmarks = topLevelBookmarks(src)
+    if (!bookmarks.length) {
+      throw new Error('This PDF has no top-level bookmarks to split on.')
+    }
+    for (let b = 0; b < bookmarks.length; b++) {
+      onProgress?.(b / bookmarks.length, `Building chapter ${b + 1} of ${bookmarks.length}…`)
+      const start = bookmarks[b].pageIndex
+      const end = b + 1 < bookmarks.length ? bookmarks[b + 1].pageIndex : total
+      const pageIndices = []
+      for (let p = start; p < end; p++) pageIndices.push(p)
+      if (!pageIndices.length) continue
+      const blob = await subsetPdf(src, pageIndices)
+      const slug = (bookmarks[b].title || `chapter-${b + 1}`).replace(/[^\w-]+/g, '_').slice(0, 60)
+      results.push({ filename: `${base}-${String(b + 1).padStart(2, '0')}-${slug}.pdf`, blob })
+    }
+  } else if (mode === 'explode') {
     for (let i = 0; i < total; i++) {
       onProgress?.(i / total, `Extracting page ${i + 1} of ${total}…`)
       const blob = await subsetPdf(src, [i])
