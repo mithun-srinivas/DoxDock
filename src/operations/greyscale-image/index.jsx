@@ -4,12 +4,12 @@ import Progress from "../../components/Progress.jsx"
 import Note from "../../components/Note.jsx"
 import ImageResult from "../../components/ImageResult.jsx"
 import Icon from "../../components/Icon.jsx"
-import { invertImage } from "./helper"
+import { convertImage } from "./helper.js"
 import { useJob } from "../../hooks/useJob.js"
 import { formatBytes } from "../../lib/format.js"
 
 
-export default function InvertImage() {
+export default function ConvertImagetoGreyscale() {
     const [file, setFile] = useState(null)
     const { running, progress, error, result, run, reset } = useJob()
 
@@ -17,7 +17,7 @@ export default function InvertImage() {
         setFile(files[0])
         reset()
     }
-    const go = () => run((p) => invertImage(file, p))
+    const go = () => run((p) => convertImagetoGreyscale(file, p))
 
     return (
         <div className="space-y-6">
@@ -33,13 +33,13 @@ export default function InvertImage() {
 
                     <button type="button" className="btn-primary" onClick={go} disabled={running}>
                         <Icon name="contrast" className="h-4 w-4" />
-                        Invert colors
+                        Convert colors to Greyscale
                     </button>
                 </>
             )}
 
             {running && progress && <Progress value={progress.value} message={progress.message} />}
-            {error && <Note type="error" title="Invert failed">{error}</Note>}
+            {error && <Note type="error" title="Conversion failed">{error}</Note>}
             {result && !running && <ImageResult result={result} />}
         </div>
     )
