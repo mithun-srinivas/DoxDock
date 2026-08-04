@@ -1,0 +1,19 @@
+package.json
+  s_98b591397cb212::t_9a7e16feaef951 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "b56cb8f1d848e6a4269e97673e5877bbdc13c97b",
+  "prompts": {},
+  "sessions": {
+    "s_98b591397cb212": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d54973ed-89b7-4bec-aa50-d243fc7f80a8",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
