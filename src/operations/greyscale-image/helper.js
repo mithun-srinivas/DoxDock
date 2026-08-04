@@ -3,11 +3,11 @@ import { outName } from "../../lib/imageFormat.js"
 /**
  * @param {File} file
  */
-export async function invertImage(file, onProgress) {
+export async function convertImagetoGreyscale(file, onProgress) {
     onProgress?.(0.3, 'Decoding image…')
     const bitmap = await decode(file)
 
-    onProgress?.(0.6, 'Inverting colors…')
+    onProgress?.(0.6, 'Converting colors…')
     const canvas = document.createElement('canvas')
     canvas.width = bitmap.width
     canvas.height = bitmap.height
