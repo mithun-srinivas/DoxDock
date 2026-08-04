@@ -4,9 +4,9 @@ import Progress from "../../components/Progress.jsx"
 import Note from "../../components/Note.jsx"
 import ImageResult from "../../components/ImageResult.jsx"
 import Icon from "../../components/Icon.jsx"
-import { convertImage } from "./helper.js"
 import { useJob } from "../../hooks/useJob.js"
 import { formatBytes } from "../../lib/format.js"
+import { convertImagetoGreyscale } from "./helper.js"
 
 
 export default function ConvertImagetoGreyscale() {
