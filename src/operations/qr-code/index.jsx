@@ -42,17 +42,12 @@ export default function QrCodeGenerator() {
     run((p) => generateQr({ content, size, errorCorrectionLevel, foreground, background }, p))
   }
 
-  const inputClass =
-    'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100'
-
   return (
     <div className="space-y-6">
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
-          Content
-        </label>
+        <label className="field-label">Content</label>
         <textarea
-          className={`${inputClass} min-h-28 font-mono`}
+          className="field-input min-h-28 font-mono"
           value={content}
           onChange={(event) => setContent(event.target.value)}
           placeholder="Text, URL, WIFI:S:name;T:WPA;P:password;;, or vCard"
@@ -61,9 +56,9 @@ export default function QrCodeGenerator() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">Size</span>
+          <span className="field-label">Size</span>
           <input
-            className={inputClass}
+            className="field-input"
             type="number"
             min={128}
             max={1024}
@@ -73,11 +68,9 @@ export default function QrCodeGenerator() {
           />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Error correction
-          </span>
+          <span className="field-label">Error correction</span>
           <select
-            className={inputClass}
+            className="field-input"
             value={errorCorrectionLevel}
             onChange={(event) => setErrorCorrectionLevel(event.target.value)}
           >
@@ -89,22 +82,18 @@ export default function QrCodeGenerator() {
           </select>
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Foreground
-          </span>
+          <span className="field-label">Foreground</span>
           <input
-            className={`${inputClass} h-11`}
+            className="field-input h-11"
             type="color"
             value={foreground}
             onChange={(event) => setForeground(event.target.value)}
           />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
-            Background
-          </span>
+          <span className="field-label">Background</span>
           <input
-            className={`${inputClass} h-11`}
+            className="field-input h-11"
             type="color"
             value={background}
             onChange={(event) => setBackground(event.target.value)}
