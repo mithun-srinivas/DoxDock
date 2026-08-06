@@ -8,7 +8,7 @@ import { generateQr, qrDataUrl } from './helpers.js'
 const ERROR_CORRECTION_LEVELS = ['L', 'M', 'Q', 'H']
 
 export default function QrCodeGenerator() {
-  const [content, setContent] = useState('https://example.com')
+  const [content, setContent] = useState('Hello, DoxDock')
   const [size, setSize] = useState(256)
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState('M')
   const [foreground, setForeground] = useState('#000000')
