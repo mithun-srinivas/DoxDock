@@ -21,6 +21,12 @@ export function percentChange(before, after) {
   return Math.round(((before - after) / before) * 100)
 }
 
+/** Character count for a text input: "0 characters", "1 character", "1,234 characters". */
+export function formatCharCount(text) {
+  const n = String(text ?? '').length
+  return `${n.toLocaleString()} ${n === 1 ? 'character' : 'characters'}`
+}
+
 /** Strip the extension from a filename: "a.b.pdf" -> "a.b". */
 export function baseName(name = '') {
   const dot = name.lastIndexOf('.')
