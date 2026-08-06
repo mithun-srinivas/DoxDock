@@ -213,7 +213,7 @@ export default function App() {
             collapsed ? 'lg:w-0 border-r-0' : 'w-72 border-r border-slate-200 dark:border-slate-800'
           }`}
         >
-          <div className="w-72">
+          <div className="w-72 h-full overflow-auto">
             <Sidebar activeId={activeId} onSelect={handleSelect} onOpenPalette={() => setPaletteOpen(true)} />
           </div>
         </aside>
