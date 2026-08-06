@@ -10,14 +10,16 @@ import Home from './components/Home.jsx'
 import OSCodeNavBadge from './components/OSCodeNavBadge.jsx'
 import { useTheme } from './hooks/useTheme.js'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
-import { useDocumentTitle } from './hooks/useDocumentTitle.js'
+import { useSeo } from './hooks/useSeo.js'
 import { getOperation } from './registry/registry.js'
+import { emitFileDrop } from './lib/fileDropBus.js'
 
-// Hash routing. An empty hash (or #/ or #/home) means the Home landing page
-// (activeId === null); #/<id> opens that tool.
-function useHashSelection() {
+// Path routing for SEO — each tool gets its own crawlable URL ("/merge-pdfs").
+// "/" (or an unknown path) → Home landing page (activeId === null).
+// Legacy hash links ("/#/merge-pdfs") are redirected to the path form on load.
+function useRouteSelection() {
   const parse = () => {
-    const raw = window.location.hash.replace(/^#\/?/, '')
+    const raw = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, '')
     if (!raw || raw === 'home') return null
     return getOperation(raw) ? raw : null
   }
@@ -25,14 +27,21 @@ function useHashSelection() {
 
   const select = useCallback((id) => {
     setActiveId(id)
-    const target = id ? `#/${id}` : '#/'
-    if (window.location.hash !== target) window.location.hash = target
+    const target = id ? `/${id}` : '/'
+    if (window.location.pathname !== target) window.history.pushState({}, '', target)
   }, [])
 
   useEffect(() => {
-    const onHash = () => setActiveId(parse())
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
+    // Redirect old hash-style links ("/#/merge-pdfs") to the path form.
+    const legacy = window.location.hash.match(/^#\/?(.*)$/)
+    if (legacy) {
+      const id = legacy[1] === 'home' ? '' : legacy[1]
+      window.history.replaceState({}, '', (getOperation(id) ? `/${id}` : '/') + window.location.search)
+      setActiveId(getOperation(id) ? id : null)
+    }
+    const onPop = () => setActiveId(parse())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
   }, [])
 
   return [activeId, select]
@@ -40,14 +49,15 @@ function useHashSelection() {
 
 export default function App() {
   const [theme, setTheme] = useTheme()
-  const [activeId, select] = useHashSelection()
+  const [activeId, select] = useRouteSelection()
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const [collapsed, setCollapsed] = useLocalStorage('doxdock:sidebarCollapsed', false)
 
   const activeOp = activeId ? getOperation(activeId) : null
 
-  useDocumentTitle(activeOp ? `${activeOp.name} — DoxDock` : 'DoxDock')
+  useSeo(activeOp)
 
   // Global Cmd/Ctrl+K to open the palette.
   useEffect(() => {
@@ -59,6 +69,43 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    let dragCounter = 0
+
+    const onDragEnter = (e) => {
+      e.preventDefault()
+      dragCounter++
+      if (e.dataTransfer?.types?.includes('Files')) setIsDragging(true)
+    }
+    const onDragOver = (e) => { e.preventDefault() }
+    const onDragLeave = (e) => {
+      e.preventDefault()
+      dragCounter--
+      if (dragCounter <= 0) { dragCounter = 0; setIsDragging(false) }
+    }
+    const onDrop = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      dragCounter = 0
+      setIsDragging(false)
+      const file = e.dataTransfer?.files?.[0]
+      if (!file) return
+      emitFileDrop(file)
+    }
+
+    window.addEventListener('dragenter', onDragEnter)
+    window.addEventListener('dragover', onDragOver)
+    window.addEventListener('dragleave', onDragLeave)
+    window.addEventListener('drop', onDrop)
+
+    return () => {
+      window.removeEventListener('dragenter', onDragEnter)
+      window.removeEventListener('dragover', onDragOver)
+      window.removeEventListener('dragleave', onDragLeave)
+      window.removeEventListener('drop', onDrop)
+    }
   }, [])
 
   const handleSelect = (id) => {
@@ -96,6 +143,14 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col">
+      {isDragging && (
+        <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-brand-900/40 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-brand-400 bg-white/90 px-12 py-10 shadow-2xl dark:bg-slate-900/90">
+            <Icon name="upload" className="h-10 w-10 text-brand-500" />
+            <p className="text-lg font-semibold text-brand-700 dark:text-brand-300">Drop your file anywhere</p>
+          </div>
+        </div>
+      )}
       {/* Top bar */}
       <header className="z-20 flex items-center gap-3 border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
         <button
@@ -116,7 +171,7 @@ export default function App() {
         >
           <Icon name="panelLeft" className="h-5 w-5" />
         </button>
-        <a href="#/" className="flex items-center gap-2" onClick={() => handleSelect(null)}>
+        <a href="/" className="flex items-center gap-2" onClick={(e) => { e.preventDefault(); handleSelect(null) }}>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
             <Icon name="layers" className="h-5 w-5" />
           </span>
@@ -158,7 +213,7 @@ export default function App() {
             collapsed ? 'lg:w-0 border-r-0' : 'w-72 border-r border-slate-200 dark:border-slate-800'
           }`}
         >
-          <div className="w-72">
+          <div className="w-72 h-full overflow-auto">
             <Sidebar activeId={activeId} onSelect={handleSelect} onOpenPalette={() => setPaletteOpen(true)} />
           </div>
         </aside>

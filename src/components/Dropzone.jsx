@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useId } from 'react'
 import Icon from './Icon.jsx'
 import { cx } from '../lib/format.js'
+import { useFileDrop } from '../hooks/useFileDrop.js'
 
 // Reusable drag-and-drop dropzone + file picker. Keyboard accessible (Enter/Space
 // opens the picker). Files never leave the browser — they are handed straight to
@@ -35,6 +36,13 @@ export default function Dropzone({
   )
 
   const open = () => inputRef.current?.click()
+
+  // Route window-wide drops (anywhere outside this box) into the same file pipeline.
+  const onWindowFileDrop = useCallback(
+    (file) => handleFiles([file]),
+    [handleFiles],
+  )
+  useFileDrop(onWindowFileDrop)
 
   return (
     <div
