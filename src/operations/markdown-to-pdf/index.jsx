@@ -4,6 +4,7 @@ import Note from '../../components/Note.jsx'
 import Icon from '../../components/Icon.jsx'
 import DownloadButton from '../../components/DownloadButton.jsx'
 import { useJob } from '../../hooks/useJob.js'
+import { formatCharCount } from '../../lib/format.js'
 import { markdownToPdf } from './helpers.js'
 
 const SAMPLE = `# DoxDock
@@ -60,6 +61,9 @@ export default function MarkdownToPdf() {
           className="field-input h-72 font-mono text-sm leading-relaxed"
           spellCheck={false}
         />
+        <span className="block text-right text-xs text-slate-500 dark:text-slate-400" aria-live="polite">
+          {formatCharCount(text)}
+        </span>
       </label>
 
       <div className="card p-4">
