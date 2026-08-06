@@ -10,7 +10,6 @@ export default function FileList({
   onClear,
   icon = 'fileText',
 }) {
-
   const totalFileSize = (files) => {
     const totalSize = files.reduce((acc, file) => acc + (file.size || 0), 0)
     return formatBytes(totalSize)
@@ -28,7 +27,11 @@ export default function FileList({
           Total: {totalFileSize(files)}
         </p>
         {onClear && (
-          <button type="button" onClick={onClear} className="btn-ghost px-2 py-1 text-xs">
+          <button
+            type="button"
+            onClick={onClear}
+            className="btn-ghost px-2 py-1 text-xs"
+          >
             Clear all
           </button>
         )}
@@ -49,7 +52,10 @@ export default function FileList({
             className="card flex items-center gap-3 p-3"
           >
             {onMove && (
-              <span className="cursor-grab text-slate-400" title="Drag to reorder">
+              <span
+                className="cursor-grab text-slate-400"
+                title="Drag to reorder"
+              >
                 <Icon name="grip" className="h-5 w-5" />
               </span>
             )}

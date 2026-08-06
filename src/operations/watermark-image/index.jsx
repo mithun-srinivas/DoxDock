@@ -148,7 +148,9 @@ export default function WatermarkImage() {
               )}
 
               <label className="space-y-1">
-                <span className="field-label">Opacity: {Math.round(opacity * 100)}%</span>
+                <span className="field-label">
+                  Opacity: {Math.round(opacity * 100)}%
+                </span>
                 <input
                   type="range"
                   min="0.05"
@@ -161,7 +163,9 @@ export default function WatermarkImage() {
               </label>
 
               <label className="space-y-1">
-                <span className="field-label">Size: {Math.round(scale * 100)}% of width</span>
+                <span className="field-label">
+                  Size: {Math.round(scale * 100)}% of width
+                </span>
                 <input
                   type="range"
                   min="0.05"
@@ -187,15 +191,28 @@ export default function WatermarkImage() {
             </div>
           </div>
 
-          <button type="button" className="btn-primary" onClick={go} disabled={running}>
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={go}
+            disabled={running}
+          >
             <Icon name="droplet" className="h-4 w-4" />
-            {files.length > 1 ? `Watermark ${files.length} images` : 'Add watermark'}
+            {files.length > 1
+              ? `Watermark ${files.length} images`
+              : 'Add watermark'}
           </button>
         </>
       )}
 
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
-      {error && <Note type="error" title="Watermark failed">{error}</Note>}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
+      {error && (
+        <Note type="error" title="Watermark failed">
+          {error}
+        </Note>
+      )}
       {result && !running && (
         <ResultGallery results={result} zipName="doxdock-watermarked.zip" />
       )}

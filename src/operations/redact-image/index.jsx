@@ -68,8 +68,15 @@ export default function RedactImage() {
       {file && natural && (
         <>
           <div className="card space-y-3 p-4">
-            <span className="field-label">Drag on the image to cover something</span>
-            <RegionPicker url={url} natural={natural} regions={regions} onChange={change} />
+            <span className="field-label">
+              Drag on the image to cover something
+            </span>
+            <RegionPicker
+              url={url}
+              natural={natural}
+              regions={regions}
+              onChange={change}
+            />
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
               <span>
                 {regions.length === 0
@@ -77,7 +84,11 @@ export default function RedactImage() {
                   : `${regions.length} region(s) — drag again to add another`}
               </span>
               {regions.length > 0 && (
-                <button type="button" className="btn-ghost" onClick={() => change([])}>
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => change([])}
+                >
                   <Icon name="trash" className="h-4 w-4" />
                   Clear all
                 </button>
@@ -119,7 +130,8 @@ export default function RedactImage() {
                 </label>
               ))}
               <p className="text-xs text-slate-400">
-                Stronger means fewer, larger blocks — less of the original left behind.
+                Stronger means fewer, larger blocks — less of the original left
+                behind.
               </p>
             </div>
           </div>
@@ -138,12 +150,16 @@ export default function RedactImage() {
           </div>
 
           {regions.length === 0 && (
-            <Note type="info">Drag a box over anything you want hidden, then redact.</Note>
+            <Note type="info">
+              Drag a box over anything you want hidden, then redact.
+            </Note>
           )}
         </>
       )}
 
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
       {error && (
         <Note type="error" title="Couldn’t redact this image">
           {error}
@@ -152,9 +168,10 @@ export default function RedactImage() {
       {result && !running && (
         <>
           <Note type="info" title="Done">
-            {result.regions} region(s) {result.mode === 'blur' ? 'blurred' : 'pixelated'}. The
-            hidden detail is gone from the exported pixels — it is not an overlay you can peel
-            off.
+            {result.regions} region(s){' '}
+            {result.mode === 'blur' ? 'blurred' : 'pixelated'}. The hidden
+            detail is gone from the exported pixels — it is not an overlay you
+            can peel off.
           </Note>
           <ImageResult result={result} />
         </>

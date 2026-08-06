@@ -5,7 +5,8 @@ import { useEffect } from 'react'
 // the prerendered per-tool pages) — this just updates them in place so a
 // JS-rendering crawler and social-share scrapers see the right title/description.
 const SITE = 'https://doxdock.vercel.app'
-const DEFAULT_TITLE = 'DoxDock — Private PDF & Image Tools, 100% in Your Browser'
+const DEFAULT_TITLE =
+  'DoxDock — Private PDF & Image Tools, 100% in Your Browser'
 const DEFAULT_DESC =
   'Free, open-source PDF & image tools that run 100% in your browser — merge, split, compress, convert, edit, and sign. No uploads, no sign-up, fully private and offline.'
 

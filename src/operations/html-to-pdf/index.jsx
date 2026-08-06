@@ -27,7 +27,12 @@ export default function HtmlToPdf() {
     if (f) f.text().then(setText)
     e.target.value = ''
   }
-  const go = () => run((p) => htmlToPdf(text, { pageSize, fontSize: Number(fontSize) }, p).then((blob) => ({ blob, filename: 'document.pdf' })))
+  const go = () =>
+    run((p) =>
+      htmlToPdf(text, { pageSize, fontSize: Number(fontSize) }, p).then(
+        (blob) => ({ blob, filename: 'document.pdf' }),
+      ),
+    )
 
   return (
     <div className="space-y-6">
@@ -35,9 +40,18 @@ export default function HtmlToPdf() {
         <label className="btn-secondary cursor-pointer">
           <Icon name="upload" className="h-4 w-4" />
           Load .html file
-          <input type="file" accept=".html,.htm,text/html" className="sr-only" onChange={loadFile} />
+          <input
+            type="file"
+            accept=".html,.htm,text/html"
+            className="sr-only"
+            onChange={loadFile}
+          />
         </label>
-        <button type="button" className="btn-ghost" onClick={() => setText(SAMPLE)}>
+        <button
+          type="button"
+          className="btn-ghost"
+          onClick={() => setText(SAMPLE)}
+        >
           Insert sample
         </button>
       </div>
@@ -51,7 +65,10 @@ export default function HtmlToPdf() {
           className="field-input h-72 font-mono text-sm leading-relaxed"
           spellCheck={false}
         />
-        <span className="block text-right text-xs text-slate-500 dark:text-slate-400" aria-live="polite">
+        <span
+          className="block text-right text-xs text-slate-500 dark:text-slate-400"
+          aria-live="polite"
+        >
           {formatCharCount(text)}
         </span>
       </label>
@@ -60,7 +77,11 @@ export default function HtmlToPdf() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="space-y-1">
             <span className="field-label">Page size</span>
-            <select className="field-input" value={pageSize} onChange={(e) => setPageSize(e.target.value)}>
+            <select
+              className="field-input"
+              value={pageSize}
+              onChange={(e) => setPageSize(e.target.value)}
+            >
               <option value="A4">A4</option>
               <option value="Letter">Letter</option>
               <option value="Legal">Legal</option>
@@ -68,21 +89,39 @@ export default function HtmlToPdf() {
           </label>
           <label className="space-y-1">
             <span className="field-label">Base font size: {fontSize}pt</span>
-            <input type="range" min="9" max="14" value={fontSize} onChange={(e) => setFontSize(e.target.value)} className="w-full accent-brand-600" />
+            <input
+              type="range"
+              min="9"
+              max="14"
+              value={fontSize}
+              onChange={(e) => setFontSize(e.target.value)}
+              className="w-full accent-brand-600"
+            />
           </label>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" className="btn-primary" onClick={go} disabled={running || !text.trim()}>
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={go}
+          disabled={running || !text.trim()}
+        >
           <Icon name="code" className="h-4 w-4" />
           Create PDF
         </button>
         {result && <DownloadButton result={result} />}
       </div>
 
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
-      {error && <Note type="error" title="Couldn’t create the PDF">{error}</Note>}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
+      {error && (
+        <Note type="error" title="Couldn’t create the PDF">
+          {error}
+        </Note>
+      )}
     </div>
   )
 }

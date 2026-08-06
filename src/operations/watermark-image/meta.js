@@ -1,7 +1,8 @@
 export default {
   id: 'watermark-image',
   name: 'Watermark Image',
-  description: 'Overlay text or a logo — position, opacity and size, single or tiled.',
+  description:
+    'Overlay text or a logo — position, opacity and size, single or tiled.',
   category: 'image',
   icon: 'droplet',
   order: 26,

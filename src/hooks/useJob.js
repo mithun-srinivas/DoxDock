@@ -58,5 +58,15 @@ export function useJob() {
 
   const cancel = reset
 
-  return { running, slow, progress, error, result, run, reset, cancel, setError }
+  return {
+    running,
+    slow,
+    progress,
+    error,
+    result,
+    run,
+    reset,
+    cancel,
+    setError,
+  }
 }

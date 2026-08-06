@@ -48,19 +48,30 @@ export default function Sidebar({ activeId, onSelect, onOpenPalette }) {
                 : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800',
             )}
           >
-            <Icon name="home" className={cx('h-4 w-4 flex-shrink-0', activeId == null ? 'text-brand-600 dark:text-brand-300' : 'text-slate-400')} />
+            <Icon
+              name="home"
+              className={cx(
+                'h-4 w-4 flex-shrink-0',
+                activeId == null
+                  ? 'text-brand-600 dark:text-brand-300'
+                  : 'text-slate-400',
+              )}
+            />
             <span>Home</span>
           </button>
         )}
         {groups.length === 0 && (
-          <p className="px-3 py-4 text-sm text-slate-500">No tools match “{query}”.</p>
+          <p className="px-3 py-4 text-sm text-slate-500">
+            No tools match “{query}”.
+          </p>
         )}
         {groups.map((group, gi) => (
           <div
             key={group.id}
             className={cx(
               'mb-2',
-              gi > 0 && 'mt-4 border-t border-slate-200/80 pt-4 dark:border-slate-800',
+              gi > 0 &&
+                'mt-4 border-t border-slate-200/80 pt-4 dark:border-slate-800',
             )}
           >
             <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
@@ -84,7 +95,9 @@ export default function Sidebar({ activeId, onSelect, onOpenPalette }) {
                       name={op.icon}
                       className={cx(
                         'h-4 w-4 flex-shrink-0',
-                        activeId === op.id ? 'text-brand-600 dark:text-brand-300' : 'text-slate-400',
+                        activeId === op.id
+                          ? 'text-brand-600 dark:text-brand-300'
+                          : 'text-slate-400',
                       )}
                     />
                     <span className="truncate">{op.name}</span>

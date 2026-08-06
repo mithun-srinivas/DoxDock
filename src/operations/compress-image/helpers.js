@@ -8,7 +8,8 @@ const MIME = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' }
  */
 export async function compressImage(file, opts, onProgress) {
   const { quality = 0.7, maxDimension = 0, format = 'keep' } = opts || {}
-  if (!file.type.startsWith('image/')) throw new Error('Please choose an image file.')
+  if (!file.type.startsWith('image/'))
+    throw new Error('Please choose an image file.')
 
   const options = {
     initialQuality: quality,
@@ -21,7 +22,12 @@ export async function compressImage(file, opts, onProgress) {
 
   const outType = options.fileType || file.type
   const out = await imageCompression(file, options)
-  const ext = format === 'keep' ? file.name.split('.').pop() : format === 'jpeg' ? 'jpg' : format
+  const ext =
+    format === 'keep'
+      ? file.name.split('.').pop()
+      : format === 'jpeg'
+        ? 'jpg'
+        : format
   const base = file.name.replace(/\.[^.]+$/, '')
   let blob = out instanceof Blob ? out : new Blob([out], { type: outType })
   // Re-encoding a lossless format (e.g. PNG) can yield a LARGER file than the source. When we didn't

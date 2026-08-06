@@ -35,9 +35,11 @@ export default function ImagesToPdf() {
 
   const generate = () =>
     run((onProgress) =>
-      imagesToPdf(files, { pageSize, orientation, margin: Number(margin) }, onProgress).then(
-        (blob) => ({ blob, filename: 'images.pdf' }),
-      ),
+      imagesToPdf(
+        files,
+        { pageSize, orientation, margin: Number(margin) },
+        onProgress,
+      ).then((blob) => ({ blob, filename: 'images.pdf' })),
     )
 
   return (
@@ -126,10 +128,18 @@ export default function ImagesToPdf() {
       )}
 
       {notice && <Note type="warning">{notice}</Note>}
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
-      {error && <Note type="error" title="Couldn’t create the PDF">{error}</Note>}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
+      {error && (
+        <Note type="error" title="Couldn’t create the PDF">
+          {error}
+        </Note>
+      )}
       {result && !running && (
-        <Note type="info">Your PDF is ready — it was generated entirely on this device.</Note>
+        <Note type="info">
+          Your PDF is ready — it was generated entirely on this device.
+        </Note>
       )}
     </div>
   )
