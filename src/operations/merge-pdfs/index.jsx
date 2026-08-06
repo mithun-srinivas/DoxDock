@@ -40,7 +40,7 @@ export default function MergePdfs() {
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={add} accept="application/pdf,.pdf" label="Drop PDFs here or click to browse" hint="Add two or more PDFs, then drag to reorder" icon="fileText" />
+      <Dropzone onFiles={add} files={files} accept="application/pdf,.pdf" label="Drop PDFs here or click to browse" hint="Add two or more PDFs, then drag to reorder" icon="fileText" />
 
       {files.length > 0 && (
         <>

@@ -51,6 +51,7 @@ export default function ImagesToPdf() {
     <div className="space-y-6">
       <Dropzone
         onFiles={addFiles}
+        files={files}
         accept="image/*"
         label="Drop images here or click to browse"
         hint="JPEG, PNG, WebP, GIF, BMP — reorder them below after adding"
