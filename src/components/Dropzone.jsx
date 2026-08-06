@@ -2,10 +2,11 @@ import { useRef, useState, useCallback, useId } from 'react'
 import Icon from './Icon.jsx'
 import { cx } from '../lib/format.js'
 import { useFileDrop } from '../hooks/useFileDrop.js'
+import { usePasteFiles } from '../hooks/usePasteFiles.js'
 
-// Reusable drag-and-drop dropzone + file picker. Keyboard accessible (Enter/Space
-// opens the picker). Files never leave the browser — they are handed straight to
-// the calling operation.
+// Reusable drag-and-drop dropzone + file picker, also accepting a clipboard
+// paste. Keyboard accessible (Enter/Space opens the picker). Files never leave
+// the browser — they are handed straight to the calling operation.
 export default function Dropzone({
   onFiles,
   accept,
@@ -43,6 +44,9 @@ export default function Dropzone({
     [handleFiles],
   )
   useFileDrop(onWindowFileDrop)
+
+  // Same for a clipboard paste, filtered by this tool's `accept`.
+  usePasteFiles(handleFiles, accept)
 
   return (
     <div
@@ -83,6 +87,9 @@ export default function Dropzone({
       </span>
       <div>
         <p className="font-medium text-slate-700 dark:text-slate-200">{label}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          …or paste one from the clipboard
+        </p>
         {hint && (
           <p id={`${id}-hint`} className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {hint}
