@@ -1,7 +1,8 @@
 export default {
   id: 'sanitize-pdf',
   name: 'Sanitize PDF',
-  description: 'Strip embedded JavaScript, attached files, metadata and annotations.',
+  description:
+    'Strip embedded JavaScript, attached files, metadata and annotations.',
   category: 'pdf',
   icon: 'lock',
   order: 14,

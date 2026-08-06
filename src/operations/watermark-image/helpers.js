@@ -79,7 +79,8 @@ export async function watermarkImage(file, opts, onProgress) {
     quality = 0.92,
   } = opts || {}
 
-  if (mode === 'text' && !text.trim()) throw new Error('Enter the watermark text.')
+  if (mode === 'text' && !text.trim())
+    throw new Error('Enter the watermark text.')
   if (mode === 'logo' && !logo) throw new Error('Choose a logo image.')
 
   onProgress?.(0.2, 'Decoding image…')
@@ -108,7 +109,9 @@ export async function watermarkImage(file, opts, onProgress) {
     const h = fontSize
 
     if (layout === 'tile') {
-      drawTiled(ctx, width, height, w, h, angle, (x, y) => ctx.fillText(text, x, y))
+      drawTiled(ctx, width, height, w, h, angle, (x, y) =>
+        ctx.fillText(text, x, y),
+      )
     } else {
       const { x, y } = placeAt(position, width, height, w, h, margin)
       ctx.fillText(text, x, y)
@@ -119,7 +122,9 @@ export async function watermarkImage(file, opts, onProgress) {
     const { width: w, height: h } = scaledLogoSize(logoBitmap, width, scale)
 
     if (layout === 'tile') {
-      drawTiled(ctx, width, height, w, h, angle, (x, y) => ctx.drawImage(logoBitmap, x, y, w, h))
+      drawTiled(ctx, width, height, w, h, angle, (x, y) =>
+        ctx.drawImage(logoBitmap, x, y, w, h),
+      )
     } else {
       const { x, y } = placeAt(position, width, height, w, h, margin)
       ctx.drawImage(logoBitmap, x, y, w, h)
@@ -149,7 +154,10 @@ export async function watermarkImages(files, opts, onProgress) {
     const file = files[i]
     // Scale each file's own progress into its slice of the overall bar.
     await watermarkImage(file, opts, (value, message) =>
-      onProgress?.((i + (value || 0)) / files.length, `${file.name}: ${message}`),
+      onProgress?.(
+        (i + (value || 0)) / files.length,
+        `${file.name}: ${message}`,
+      ),
     ).then((result) => results.push(result))
   }
   onProgress?.(1, 'Done')

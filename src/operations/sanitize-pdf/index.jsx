@@ -68,8 +68,12 @@ export default function SanitizePdf() {
         <>
           <div className="card flex items-center gap-3 p-3">
             <Icon name="layers" className="h-5 w-5 text-brand-600" />
-            <span className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</span>
-            <span className="text-xs text-slate-400">{formatBytes(file.size)}</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">
+              {file.name}
+            </span>
+            <span className="text-xs text-slate-400">
+              {formatBytes(file.size)}
+            </span>
           </div>
 
           <div className="card space-y-3 p-4">
@@ -103,12 +107,20 @@ export default function SanitizePdf() {
             {result && !running && <DownloadButton result={result} />}
           </div>
 
-          {nothingSelected && <Note type="info">Choose at least one thing to remove.</Note>}
+          {nothingSelected && (
+            <Note type="info">Choose at least one thing to remove.</Note>
+          )}
         </>
       )}
 
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
-      {error && <Note type="error" title="Couldn’t sanitize this PDF">{error}</Note>}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
+      {error && (
+        <Note type="error" title="Couldn’t sanitize this PDF">
+          {error}
+        </Note>
+      )}
       {result && !running && (
         <Note type="info" title="Done">
           {summarize(result.report)} The visible pages are unchanged.
@@ -126,6 +138,7 @@ function summarize(report) {
   if (report.embeddedFiles > 0) parts.push('attached files')
   if (report.metadata > 0) parts.push('metadata')
   if (report.annotations > 0) parts.push(`${report.annotations} annotation(s)`)
-  if (parts.length === 0) return 'This PDF had none of the selected items — nothing to remove.'
+  if (parts.length === 0)
+    return 'This PDF had none of the selected items — nothing to remove.'
   return `Removed: ${parts.join(', ')}.`
 }

@@ -105,5 +105,10 @@ export default function RegionPicker({ url, natural, regions, onChange }) {
 }
 
 function round(r) {
-  return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.w), h: Math.round(r.h) }
+  return {
+    x: Math.round(r.x),
+    y: Math.round(r.y),
+    w: Math.round(r.w),
+    h: Math.round(r.h),
+  }
 }

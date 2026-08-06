@@ -51,7 +51,9 @@ function topLevelBookmarks(src) {
   if (!outlines) return []
   const refKey = (ref) => `${ref.objectNumber}R${ref.generationNumber}`
   const pageIndexByRef = new Map()
-  src.getPages().forEach((page, index) => pageIndexByRef.set(refKey(page.ref), index))
+  src
+    .getPages()
+    .forEach((page, index) => pageIndexByRef.set(refKey(page.ref), index))
 
   const bookmarks = []
   const seen = new Set()
@@ -65,7 +67,10 @@ function topLevelBookmarks(src) {
     if (pageIndex != null) {
       const title = item.get(PDFName.of('Title'))
       bookmarks.push({
-        title: title && typeof title.decodeText === 'function' ? title.decodeText() : `Bookmark ${bookmarks.length + 1}`,
+        title:
+          title && typeof title.decodeText === 'function'
+            ? title.decodeText()
+            : `Bookmark ${bookmarks.length + 1}`,
         pageIndex,
       })
     }
@@ -85,7 +90,9 @@ export async function splitPdf(file, opts, onProgress) {
   try {
     src = await PDFDocument.load(await file.arrayBuffer())
   } catch {
-    throw new Error('Could not read this PDF. Encrypted PDFs are not supported.')
+    throw new Error(
+      'Could not read this PDF. Encrypted PDFs are not supported.',
+    )
   }
   const total = src.getPageCount()
   const base = baseName(file.name)
@@ -97,7 +104,10 @@ export async function splitPdf(file, opts, onProgress) {
     for (let g = 0; g < groups.length; g++) {
       const blob = await subsetPdf(src, groups[g])
       const over = blob.size > limitBytes ? '-oversize' : ''
-      results.push({ filename: `${base}-part${String(g + 1).padStart(2, '0')}${over}.pdf`, blob })
+      results.push({
+        filename: `${base}-part${String(g + 1).padStart(2, '0')}${over}.pdf`,
+        blob,
+      })
     }
   } else if (mode === 'bookmarks') {
     const bookmarks = topLevelBookmarks(src)
@@ -105,32 +115,59 @@ export async function splitPdf(file, opts, onProgress) {
       throw new Error('This PDF has no top-level bookmarks to split on.')
     }
     for (let b = 0; b < bookmarks.length; b++) {
-      onProgress?.(b / bookmarks.length, `Building chapter ${b + 1} of ${bookmarks.length}…`)
+      onProgress?.(
+        b / bookmarks.length,
+        `Building chapter ${b + 1} of ${bookmarks.length}…`,
+      )
       const start = bookmarks[b].pageIndex
       const end = b + 1 < bookmarks.length ? bookmarks[b + 1].pageIndex : total
       const pageIndices = []
       for (let p = start; p < end; p++) pageIndices.push(p)
       if (!pageIndices.length) continue
       const blob = await subsetPdf(src, pageIndices)
-      const slug = (bookmarks[b].title || `chapter-${b + 1}`).replace(/[^\w-]+/g, '_').slice(0, 60)
-      results.push({ filename: `${base}-${String(b + 1).padStart(2, '0')}-${slug}.pdf`, blob })
+      const slug = (bookmarks[b].title || `chapter-${b + 1}`)
+        .replace(/[^\w-]+/g, '_')
+        .slice(0, 60)
+      results.push({
+        filename: `${base}-${String(b + 1).padStart(2, '0')}-${slug}.pdf`,
+        blob,
+      })
     }
   } else if (mode === 'explode') {
     for (let i = 0; i < total; i++) {
       onProgress?.(i / total, `Extracting page ${i + 1} of ${total}…`)
       const blob = await subsetPdf(src, [i])
-      results.push({ filename: `${base}-p${String(i + 1).padStart(3, '0')}.pdf`, blob })
+      results.push({
+        filename: `${base}-p${String(i + 1).padStart(3, '0')}.pdf`,
+        blob,
+      })
     }
   } else {
     // Each comma-separated group becomes its own output file.
-    const groups = ranges.split(',').map((s) => s.trim()).filter(Boolean)
-    if (!groups.length) throw new Error('Enter one or more page ranges, e.g. "1-3, 4-6".')
+    const groups = ranges
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+    if (!groups.length)
+      throw new Error('Enter one or more page ranges, e.g. "1-3, 4-6".')
     for (let g = 0; g < groups.length; g++) {
-      onProgress?.(g / groups.length, `Building file ${g + 1} of ${groups.length}…`)
+      onProgress?.(
+        g / groups.length,
+        `Building file ${g + 1} of ${groups.length}…`,
+      )
       const pages = parsePageRanges(groups[g], total)
-      if (!pages.length) throw new Error(`Range "${groups[g]}" has no valid pages (document has ${total}).`)
-      const blob = await subsetPdf(src, pages.map((p) => p - 1))
-      results.push({ filename: `${base}-${groups[g].replace(/[^0-9-]/g, '_')}.pdf`, blob })
+      if (!pages.length)
+        throw new Error(
+          `Range "${groups[g]}" has no valid pages (document has ${total}).`,
+        )
+      const blob = await subsetPdf(
+        src,
+        pages.map((p) => p - 1),
+      )
+      results.push({
+        filename: `${base}-${groups[g].replace(/[^0-9-]/g, '_')}.pdf`,
+        blob,
+      })
     }
   }
   onProgress?.(1, 'Done')

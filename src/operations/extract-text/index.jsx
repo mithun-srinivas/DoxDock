@@ -15,7 +15,9 @@ export default function ExtractText() {
   const [copied, setCopied] = useState(false)
   const { running, progress, error, result, run, reset } = useJob()
   const { pageCount } = usePdfPageCount(file)
-  const wordCount = result?.text?.trim() ? result.text.trim().split(/\s+/).length : 0
+  const wordCount = result?.text?.trim()
+    ? result.text.trim().split(/\s+/).length
+    : 0
   const charCount = result?.text?.length ?? 0
 
   const pick = (files) => {
@@ -36,25 +38,46 @@ export default function ExtractText() {
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={pick} accept="application/pdf,.pdf" multiple={false} label="Drop a PDF here or click to browse" icon="fileText" />
+      <Dropzone
+        onFiles={pick}
+        accept="application/pdf,.pdf"
+        multiple={false}
+        label="Drop a PDF here or click to browse"
+        icon="fileText"
+      />
 
       {file && (
         <>
           <div className="card flex items-center gap-3 p-3">
             <Icon name="fileText" className="h-5 w-5 text-brand-600" />
-            <span className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</span>
-           <span className="text-xs text-slate-400">{formatBytes(file.size)}{pageCount != null && ` · ${pageCount} page${pageCount === 1 ? '' : 's'}`}</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">
+              {file.name}
+            </span>
+            <span className="text-xs text-slate-400">
+              {formatBytes(file.size)}
+              {pageCount != null &&
+                ` · ${pageCount} page${pageCount === 1 ? '' : 's'}`}
+            </span>
           </div>
 
           <div className="flex flex-wrap items-end gap-3">
             <label className="space-y-1">
               <span className="field-label">Output</span>
-              <select className="field-input" value={format} onChange={(e) => setFormat(e.target.value)}>
+              <select
+                className="field-input"
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+              >
                 <option value="text">Plain text (.txt)</option>
                 <option value="markdown">Markdown (.md)</option>
               </select>
             </label>
-            <button type="button" className="btn-primary" onClick={go} disabled={running}>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={go}
+              disabled={running}
+            >
               <Icon name="fileText" className="h-4 w-4" />
               Extract text
             </button>
@@ -62,8 +85,14 @@ export default function ExtractText() {
         </>
       )}
 
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
-      {error && <Note type="error" title="Couldn’t extract text">{error}</Note>}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
+      {error && (
+        <Note type="error" title="Couldn’t extract text">
+          {error}
+        </Note>
+      )}
 
       {result && !running && (
         <div className="space-y-3">
@@ -76,17 +105,27 @@ export default function ExtractText() {
               type="button"
               className="btn-primary"
               onClick={() =>
-                downloadText(result.text, `${baseName(file.name)}.${format === 'markdown' ? 'md' : 'txt'}`, format === 'markdown' ? 'text/markdown' : 'text/plain')
+                downloadText(
+                  result.text,
+                  `${baseName(file.name)}.${format === 'markdown' ? 'md' : 'txt'}`,
+                  format === 'markdown' ? 'text/markdown' : 'text/plain',
+                )
               }
             >
               <Icon name="download" className="h-4 w-4" />
               Download
             </button>
             <span className="text-xs text-slate-400">
-            {result.pageCount} page(s) · {wordCount} words · {charCount} characters
-            </span> 
+              {result.pageCount} page(s) · {wordCount} words · {charCount}{' '}
+              characters
+            </span>
           </div>
-          <textarea readOnly value={result.text} className="field-input h-80 font-mono text-xs leading-relaxed" spellCheck={false} />
+          <textarea
+            readOnly
+            value={result.text}
+            className="field-input h-80 font-mono text-xs leading-relaxed"
+            spellCheck={false}
+          />
         </div>
       )}
     </div>

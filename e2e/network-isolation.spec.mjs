@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Network isolation', () => {
-  test('app loads and makes zero external network requests', async ({ page }) => {
+  test('app loads and makes zero external network requests', async ({
+    page,
+  }) => {
     const requests = []
     page.on('request', (req) => {
       const url = new URL(req.url())
@@ -37,7 +39,9 @@ test.describe('Network isolation', () => {
     expect(requests).toEqual([])
   })
 
-  test('compress-image tool loads without external requests', async ({ page }) => {
+  test('compress-image tool loads without external requests', async ({
+    page,
+  }) => {
     const requests = []
     page.on('request', (req) => {
       const url = new URL(req.url())

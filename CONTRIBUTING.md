@@ -156,6 +156,45 @@ Icons are inline SVG in `src/components/Icon.jsx` (no icon library, to keep the 
 - Accessible: keyboard navigation, visible focus states, labelled controls.
 - Clear empty state, sensible defaults, explicit error messages on bad/unsupported input.
 
+## Linting and Formatting
+
+DoxDock uses **ESLint** to enforce code quality and **Prettier** to maintain a consistent code style across the project.
+
+### Linting
+
+Run ESLint to check for code quality issues before opening a pull request:
+
+```bash
+npm run lint
+```
+
+### Formatting
+
+Automatically format your code using Prettier:
+
+```bash
+npm run format
+```
+
+To verify that all files are correctly formatted without making any changes:
+
+```bash
+npm run format:check
+```
+
+### Formatting Rules
+
+The project follows these formatting conventions:
+
+- Use **single quotes** (`'`) instead of double quotes (`"`).
+- **Do not use semicolons** at the end of statements.
+- Let **Prettier** handle formatting to ensure consistency across the codebase.
+
+Before submitting a pull request, make sure:
+
+- `npm run lint` completes without errors.
+- Run `npm run format` if formatting changes are needed.
+
 ## Before you open a PR
 
 - [ ] `npm run build` succeeds.

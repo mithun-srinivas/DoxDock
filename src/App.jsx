@@ -19,7 +19,10 @@ import { emitFileDrop } from './lib/fileDropBus.js'
 // Legacy hash links ("/#/merge-pdfs") are redirected to the path form on load.
 function useRouteSelection() {
   const parse = () => {
-    const raw = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, '')
+    const raw = decodeURIComponent(window.location.pathname).replace(
+      /^\/+|\/+$/g,
+      '',
+    )
     if (!raw || raw === 'home') return null
     return getOperation(raw) ? raw : null
   }
@@ -28,7 +31,8 @@ function useRouteSelection() {
   const select = useCallback((id) => {
     setActiveId(id)
     const target = id ? `/${id}` : '/'
-    if (window.location.pathname !== target) window.history.pushState({}, '', target)
+    if (window.location.pathname !== target)
+      window.history.pushState({}, '', target)
   }, [])
 
   useEffect(() => {
@@ -36,7 +40,11 @@ function useRouteSelection() {
     const legacy = window.location.hash.match(/^#\/?(.*)$/)
     if (legacy) {
       const id = legacy[1] === 'home' ? '' : legacy[1]
-      window.history.replaceState({}, '', (getOperation(id) ? `/${id}` : '/') + window.location.search)
+      window.history.replaceState(
+        {},
+        '',
+        (getOperation(id) ? `/${id}` : '/') + window.location.search,
+      )
       setActiveId(getOperation(id) ? id : null)
     }
     const onPop = () => setActiveId(parse())
@@ -53,7 +61,10 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [collapsed, setCollapsed] = useLocalStorage('doxdock:sidebarCollapsed', false)
+  const [collapsed, setCollapsed] = useLocalStorage(
+    'doxdock:sidebarCollapsed',
+    false,
+  )
 
   const activeOp = activeId ? getOperation(activeId) : null
 
@@ -79,11 +90,16 @@ export default function App() {
       dragCounter++
       if (e.dataTransfer?.types?.includes('Files')) setIsDragging(true)
     }
-    const onDragOver = (e) => { e.preventDefault() }
+    const onDragOver = (e) => {
+      e.preventDefault()
+    }
     const onDragLeave = (e) => {
       e.preventDefault()
       dragCounter--
-      if (dragCounter <= 0) { dragCounter = 0; setIsDragging(false) }
+      if (dragCounter <= 0) {
+        dragCounter = 0
+        setIsDragging(false)
+      }
     }
     const onDrop = (e) => {
       e.preventDefault()
@@ -116,7 +132,8 @@ export default function App() {
   const Component = activeOp?.Component
 
   // Standalone "pop-out" mode: render only the active tool, no sidebar/palette.
-  const standalone = new URLSearchParams(window.location.search).get('standalone') === '1'
+  const standalone =
+    new URLSearchParams(window.location.search).get('standalone') === '1'
   if (standalone && activeOp) {
     return (
       <div className="flex h-full flex-col">
@@ -125,7 +142,9 @@ export default function App() {
             <Icon name={activeOp.icon} className="h-5 w-5" />
           </span>
           <span className="font-semibold tracking-tight">{activeOp.name}</span>
-          <span className="ml-1 hidden sm:block"><PrivacyBadge compact /></span>
+          <span className="ml-1 hidden sm:block">
+            <PrivacyBadge compact />
+          </span>
           <div className="ml-auto">
             <ThemeToggle theme={theme} setTheme={setTheme} />
           </div>
@@ -147,7 +166,9 @@ export default function App() {
         <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-brand-900/40 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-brand-400 bg-white/90 px-12 py-10 shadow-2xl dark:bg-slate-900/90">
             <Icon name="upload" className="h-10 w-10 text-brand-500" />
-            <p className="text-lg font-semibold text-brand-700 dark:text-brand-300">Drop your file anywhere</p>
+            <p className="text-lg font-semibold text-brand-700 dark:text-brand-300">
+              Drop your file anywhere
+            </p>
           </div>
         </div>
       )}
@@ -171,7 +192,14 @@ export default function App() {
         >
           <Icon name="panelLeft" className="h-5 w-5" />
         </button>
-        <a href="/" className="flex items-center gap-2" onClick={(e) => { e.preventDefault(); handleSelect(null) }}>
+        <a
+          href="/"
+          className="flex items-center gap-2"
+          onClick={(e) => {
+            e.preventDefault()
+            handleSelect(null)
+          }}
+        >
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
             <Icon name="layers" className="h-5 w-5" />
           </span>
@@ -210,18 +238,31 @@ export default function App() {
         {/* Sidebar (desktop) */}
         <aside
           className={`hidden flex-shrink-0 overflow-hidden bg-slate-50 transition-[width,border] duration-200 dark:bg-slate-900/50 lg:block ${
-            collapsed ? 'lg:w-0 border-r-0' : 'w-72 border-r border-slate-200 dark:border-slate-800'
+            collapsed
+              ? 'lg:w-0 border-r-0'
+              : 'w-72 border-r border-slate-200 dark:border-slate-800'
           }`}
         >
           <div className="w-72 h-full overflow-auto">
-            <Sidebar activeId={activeId} onSelect={handleSelect} onOpenPalette={() => setPaletteOpen(true)} />
+            <Sidebar
+              activeId={activeId}
+              onSelect={handleSelect}
+              onOpenPalette={() => setPaletteOpen(true)}
+            />
           </div>
         </aside>
 
         {/* Sidebar (mobile drawer) */}
         {mobileNavOpen && (
-          <div className="fixed inset-0 z-30 lg:hidden" role="dialog" aria-modal="true">
-            <div className="absolute inset-0 bg-slate-900/40" onClick={() => setMobileNavOpen(false)} />
+          <div
+            className="fixed inset-0 z-30 lg:hidden"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className="absolute inset-0 bg-slate-900/40"
+              onClick={() => setMobileNavOpen(false)}
+            />
             <aside className="absolute left-0 top-0 h-full w-72 border-r border-slate-200 bg-slate-50 shadow-xl dark:border-slate-800 dark:bg-slate-900">
               <Sidebar
                 activeId={activeId}
@@ -237,7 +278,9 @@ export default function App() {
 
         {/* Main */}
         <main className="min-w-0 flex-1 overflow-y-auto">
-          <div className={`mx-auto px-4 py-6 sm:px-6 sm:py-8 ${activeOp ? 'max-w-3xl' : 'max-w-6xl'}`}>
+          <div
+            className={`mx-auto px-4 py-6 sm:px-6 sm:py-8 ${activeOp ? 'max-w-3xl' : 'max-w-6xl'}`}
+          >
             {activeOp ? (
               <>
                 <div className="mb-6">
@@ -246,8 +289,12 @@ export default function App() {
                       <Icon name={activeOp.icon} className="h-6 w-6" />
                     </span>
                     <div>
-                      <h1 className="text-xl font-bold tracking-tight sm:text-2xl">{activeOp.name}</h1>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">{activeOp.description}</p>
+                      <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+                        {activeOp.name}
+                      </h1>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        {activeOp.description}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-3 md:hidden">
@@ -267,14 +314,18 @@ export default function App() {
                 </Suspense>
               </>
             ) : (
-              <Home onSelect={handleSelect} onOpenPalette={() => setPaletteOpen(true)} />
+              <Home
+                onSelect={handleSelect}
+                onOpenPalette={() => setPaletteOpen(true)}
+              />
             )}
           </div>
 
           <footer className="mx-auto max-w-3xl space-y-2 px-4 pb-10 pt-4 text-xs text-slate-400 sm:px-6">
             <p>
-              DoxDock processes everything on your device. No file you open is ever uploaded — the
-              app makes zero network requests at runtime. Open source under the MIT license.
+              DoxDock processes everything on your device. No file you open is
+              ever uploaded — the app makes zero network requests at runtime.
+              Open source under the MIT license.
             </p>
             <p className="flex items-center gap-3">
               <span className="flex items-center gap-1.5">
@@ -285,7 +336,11 @@ export default function App() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-300"
                 >
-                  <img src="/oscode.png" alt="" className="h-4 w-4 rounded-sm" />
+                  <img
+                    src="/oscode.png"
+                    alt=""
+                    className="h-4 w-4 rounded-sm"
+                  />
                   OSCode Community
                 </a>
               </span>

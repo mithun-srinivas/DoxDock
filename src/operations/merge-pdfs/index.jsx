@@ -15,7 +15,9 @@ export default function MergePdfs() {
   const { running, progress, error, result, run, reset } = useJob()
 
   const add = (incoming) => {
-    const pdfs = incoming.filter((f) => /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name))
+    const pdfs = incoming.filter(
+      (f) => /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name),
+    )
     const { unique, skipped } = dedupeFiles(files, pdfs)
     if (unique.length) setFiles((prev) => [...prev, ...unique])
     setNotice(skippedNotice(skipped))
@@ -29,17 +31,41 @@ export default function MergePdfs() {
       return next
     })
 
-  const merge = () => run((p) => mergePdfs(files, p).then((blob) => ({ blob, filename: 'merged.pdf' })))
+  const merge = () =>
+    run((p) =>
+      mergePdfs(files, p).then((blob) => ({ blob, filename: 'merged.pdf' })),
+    )
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={add} files={files} accept="application/pdf,.pdf" label="Drop PDFs here or click to browse" hint="Add two or more PDFs, then drag to reorder" icon="fileText" />
+      <Dropzone
+        onFiles={add}
+        files={files}
+        accept="application/pdf,.pdf"
+        label="Drop PDFs here or click to browse"
+        hint="Add two or more PDFs, then drag to reorder"
+        icon="fileText"
+      />
 
       {files.length > 0 && (
         <>
-          <FileList files={files} onMove={move} onRemove={(i) => setFiles((p) => p.filter((_, idx) => idx !== i))} onClear={() => { setFiles([]); setNotice(''); reset() }} />
+          <FileList
+            files={files}
+            onMove={move}
+            onRemove={(i) => setFiles((p) => p.filter((_, idx) => idx !== i))}
+            onClear={() => {
+              setFiles([])
+              setNotice('')
+              reset()
+            }}
+          />
           <div className="flex flex-wrap items-center gap-3">
-            <button type="button" className="btn-primary" onClick={merge} disabled={running || files.length < 2}>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={merge}
+              disabled={running || files.length < 2}
+            >
               <Icon name="layers" className="h-4 w-4" />
               Merge {files.length > 1 ? `${files.length} PDFs` : 'PDFs'}
             </button>
@@ -49,8 +75,14 @@ export default function MergePdfs() {
       )}
 
       {notice && <Note type="warning">{notice}</Note>}
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
-      {error && <Note type="error" title="Merge failed">{error}</Note>}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
+      {error && (
+        <Note type="error" title="Merge failed">
+          {error}
+        </Note>
+      )}
     </div>
   )
 }

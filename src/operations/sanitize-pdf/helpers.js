@@ -25,7 +25,14 @@ const NAME = {
 // Info-dictionary keys a PDF carries. Blanking these and dropping the XMP
 // stream covers both metadata surfaces. setKeywords takes an array, the rest
 // take strings — hence the explicit list rather than a uniform loop.
-const INFO_KEYS = ['Title', 'Author', 'Subject', 'Keywords', 'Producer', 'Creator']
+const INFO_KEYS = [
+  'Title',
+  'Author',
+  'Subject',
+  'Keywords',
+  'Producer',
+  'Creator',
+]
 
 // pdf-lib's typed lookup THROWS when the key is missing rather than returning
 // undefined, and most of these entries are optional. These wrappers return
@@ -103,7 +110,9 @@ function removeJavaScript(doc) {
 
   // 2. /OpenAction — only when it is a JS action; a plain "go to page 1"
   //    OpenAction is harmless navigation and worth preserving.
-  const openAction = catalog.has(NAME.openAction) ? catalog.lookup(NAME.openAction) : undefined
+  const openAction = catalog.has(NAME.openAction)
+    ? catalog.lookup(NAME.openAction)
+    : undefined
   if (isJavaScriptAction(openAction)) {
     if (removeEntry(ctx, catalog, NAME.openAction)) removed++
   }
@@ -250,10 +259,17 @@ export async function sanitizePdf(file, opts, onProgress) {
   try {
     doc = await PDFDocument.load(await file.arrayBuffer())
   } catch {
-    throw new Error('Could not read this PDF. Encrypted PDFs are not supported.')
+    throw new Error(
+      'Could not read this PDF. Encrypted PDFs are not supported.',
+    )
   }
 
-  const report = { javascript: 0, embeddedFiles: 0, metadata: 0, annotations: 0 }
+  const report = {
+    javascript: 0,
+    embeddedFiles: 0,
+    metadata: 0,
+    annotations: 0,
+  }
 
   if (javascript) {
     onProgress?.(0.3, 'Removing JavaScript…')

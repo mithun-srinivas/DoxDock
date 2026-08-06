@@ -6,21 +6,36 @@ export const METADATA_FIELDS = [
   { key: 'author', label: 'Author' },
   { key: 'subject', label: 'Subject' },
   { key: 'keywords', label: 'Keywords', hint: 'Comma-separated' },
-  { key: 'creator', label: 'Creator', hint: 'The app that created the original document' },
+  {
+    key: 'creator',
+    label: 'Creator',
+    hint: 'The app that created the original document',
+  },
   { key: 'producer', label: 'Producer', hint: 'The app that produced the PDF' },
 ]
 
 export function emptyMetadata() {
-  return { title: '', author: '', subject: '', keywords: '', creator: '', producer: '' }
+  return {
+    title: '',
+    author: '',
+    subject: '',
+    keywords: '',
+    creator: '',
+    producer: '',
+  }
 }
 
 async function loadDoc(file) {
   try {
     // updateMetadata: false — don’t let pdf-lib silently rewrite Producer/ModDate;
     // the exported file should contain exactly what the user sees in the form.
-    return await PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false })
+    return await PDFDocument.load(await file.arrayBuffer(), {
+      updateMetadata: false,
+    })
   } catch {
-    throw new Error('Could not read this PDF. Encrypted PDFs are not supported.')
+    throw new Error(
+      'Could not read this PDF. Encrypted PDFs are not supported.',
+    )
   }
 }
 

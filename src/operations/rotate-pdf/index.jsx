@@ -20,11 +20,15 @@ export default function RotatePdf() {
   // validate (and only show an error) once the user has typed something.
   const rangeError = useMemo(() => {
     if (!range.trim() || pageCount == null) return null
-    const groups = range.split(',').map((s) => s.trim()).filter(Boolean)
+    const groups = range
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
     for (const g of groups) {
       try {
         const pages = parsePageRanges(g, pageCount)
-        if (!pages.length) return `"${g}" has no valid pages (document has ${pageCount}).`
+        if (!pages.length)
+          return `"${g}" has no valid pages (document has ${pageCount}).`
       } catch (err) {
         return err.message
       }
@@ -46,14 +50,25 @@ export default function RotatePdf() {
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={pick} accept="application/pdf,.pdf" multiple={false} label="Drop a PDF here or click to browse" />
+      <Dropzone
+        onFiles={pick}
+        accept="application/pdf,.pdf"
+        multiple={false}
+        label="Drop a PDF here or click to browse"
+      />
 
       {file && (
         <>
           <div className="card flex items-center gap-3 p-3">
             <Icon name="fileText" className="h-5 w-5 text-brand-600" />
-            <span className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</span>
-          <span className="text-xs text-slate-400">{formatBytes(file.size)}{pageCount != null && ` · ${pageCount} page${pageCount === 1 ? '' : 's'}`}</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">
+              {file.name}
+            </span>
+            <span className="text-xs text-slate-400">
+              {formatBytes(file.size)}
+              {pageCount != null &&
+                ` · ${pageCount} page${pageCount === 1 ? '' : 's'}`}
+            </span>
           </div>
 
           <div className="card p-4">
@@ -79,13 +94,22 @@ export default function RotatePdf() {
                   onChange={(e) => setRange(e.target.value)}
                   aria-invalid={!!rangeError}
                 />
-                {rangeError && <span className="block text-xs text-red-600 dark:text-red-400">{rangeError}</span>}
+                {rangeError && (
+                  <span className="block text-xs text-red-600 dark:text-red-400">
+                    {rangeError}
+                  </span>
+                )}
               </label>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button type="button" className="btn-primary" onClick={go} disabled={running || !!rangeError}>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={go}
+              disabled={running || !!rangeError}
+            >
               <Icon name="rotate" className="h-4 w-4" />
               Rotate PDF
             </button>
@@ -94,7 +118,9 @@ export default function RotatePdf() {
         </>
       )}
 
-      {running && progress && <Progress value={progress.value} message={progress.message} />}
+      {running && progress && (
+        <Progress value={progress.value} message={progress.message} />
+      )}
       {error && (
         <Note type="error" title="Rotate failed">
           {error}
