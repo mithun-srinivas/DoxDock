@@ -14,6 +14,7 @@ export default function PdfToImages() {
   const [format, setFormat] = useState('png')
   const [scale, setScale] = useState(2)
   const [range, setRange] = useState('')
+  const [transparent, setTransparent] = useState(false)
   const { running, progress, error, result, run, reset, slow, cancel } = useJob()
   const { pageCount } = usePdfPageCount(file)
 
@@ -39,7 +40,7 @@ export default function PdfToImages() {
   }
 
   const convert = () =>
-    run((onProgress) => pdfToImages(file, { format, scale: Number(scale), range }, onProgress))
+    run((onProgress) => pdfToImages(file, { format, scale: Number(scale), range, transparent }, onProgress))
 
   return (
     <div className="space-y-6">
@@ -83,6 +84,14 @@ export default function PdfToImages() {
                 {rangeError && <span className="block text-xs text-red-600 dark:text-red-400">{rangeError}</span>}
               </label>
             </div>
+
+            {/* JPEG has no alpha channel, so the option is only meaningful for PNG. */}
+            {format === 'png' && (
+              <label className="mt-4 flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={transparent} onChange={(e) => setTransparent(e.target.checked)} />
+                Transparent background (keep unpainted areas see-through)
+              </label>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
