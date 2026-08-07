@@ -5,6 +5,21 @@ import { VitePWA } from 'vite-plugin-pwa'
 // DoxDock is a 100% client-side static app. No dev/prod proxy, no external hosts.
 // The service worker precaches every asset so the app runs fully offline.
 export default defineConfig({
+  server: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
+  },
+  preview: {
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
+  },
+  optimizeDeps: {
+    exclude: ['onnxruntime-web'],
+  },
   plugins: [
     react(),
     VitePWA({
