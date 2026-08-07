@@ -12,7 +12,6 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@huggingface/transformers": "^4.2.0",
     "browser-image-compression": "^2.0.2",
     "docx": "^9.0.2",
     "fflate": "^0.8.3",
