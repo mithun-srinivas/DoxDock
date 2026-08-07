@@ -3,13 +3,24 @@
 // strips EXIF/GPS metadata (canvas output contains no metadata).
 
 const MIME = {
+  avif: 'image/avif',
   jpeg: 'image/jpeg',
   jpg: 'image/jpeg',
   png: 'image/png',
   webp: 'image/webp',
 }
 
-export const FORMAT_EXT = { jpeg: 'jpg', png: 'png', webp: 'webp' }
+export const FORMAT_EXT = { avif: 'avif', jpeg: 'jpg', png: 'png', webp: 'webp' }
+
+/** Detect whether the browser can encode the given MIME type. */
+export function canEncode(mime) {
+  const canvas = document.createElement('canvas')
+  canvas.width = 2
+  canvas.height = 2
+  const ctx = canvas.getContext('2d')
+  ctx.fillRect(0, 0, 2, 2)
+  return canvas.toDataURL(mime).startsWith(`data:${mime}`)
+}
 
 /** Decode a File/Blob into an ImageBitmap (with a fallback to <img>). */
 export async function decode(file) {
@@ -37,7 +48,7 @@ export function dimsOf(bitmap) {
   return { width: bitmap.width || bitmap.naturalWidth, height: bitmap.height || bitmap.naturalHeight }
 }
 
-/** Encode a canvas to a Blob of the given format ('jpeg'|'png'|'webp'). */
+/** Encode a canvas to a Blob of the given format ('avif'|'jpeg'|'png'|'webp'). */
 export function canvasToBlob(canvas, format = 'jpeg', quality = 0.9) {
   const mime = MIME[format] || 'image/jpeg'
   return new Promise((resolve, reject) => {
