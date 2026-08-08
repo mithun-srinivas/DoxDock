@@ -6,6 +6,7 @@ import Icon from '../../components/Icon.jsx'
 import ImageResult from '../../components/ImageResult.jsx'
 import { useJob } from '../../hooks/useJob.js'
 import { formatBytes } from '../../lib/format.js'
+import { canEncode, IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 import { convertImage } from './helpers.js'
 
 export default function ConvertImage() {
@@ -13,6 +14,7 @@ export default function ConvertImage() {
   const [format, setFormat] = useState('png')
   const [quality, setQuality] = useState(0.9)
   const { running, progress, error, result, run, reset } = useJob()
+  const [avifSupported] = useState(() => canEncode('image/avif'))
 
   const pick = (files) => {
     setFile(files[0])
@@ -22,7 +24,7 @@ export default function ConvertImage() {
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" icon="image" />
+      <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
 
       {file && (
         <>
@@ -40,7 +42,13 @@ export default function ConvertImage() {
                   <option value="png">PNG</option>
                   <option value="jpeg">JPEG</option>
                   <option value="webp">WebP</option>
+                  <option value="avif" disabled={!avifSupported}>
+                    AVIF{avifSupported ? '' : ' (unsupported in this browser)'}
+                  </option>
                 </select>
+                {format === 'avif' && !avifSupported && (
+                  <span className="field-label mt-1">This browser cannot encode AVIF.</span>
+                )}
               </label>
               {format !== 'png' && (
                 <label className="space-y-1">

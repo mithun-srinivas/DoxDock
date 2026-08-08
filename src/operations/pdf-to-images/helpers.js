@@ -2,15 +2,23 @@ import { loadPdf } from '../../lib/pdfjs.js'
 import { canvasToBlob } from '../../lib/imageCanvas.js'
 import { baseName, parsePageRanges } from '../../lib/format.js'
 
+// pdf.js always paints the canvas before drawing the page: CanvasGraphics.beginDrawing does
+// `ctx.fillStyle = background || '#ffffff'; ctx.fillRect(...)`. So skipping our own fill is not
+// enough to get transparency — the renderer has to be handed a transparent background instead.
+// A fully transparent fillStyle composites to nothing over a fresh canvas, which is already
+// transparent black. JPEG has no alpha channel, so the option only applies to PNG.
+const TRANSPARENT = 'rgba(0,0,0,0)'
+
 /**
  * Render PDF pages to images.
  * @param {File} file
- * @param {{format:'png'|'jpeg', scale:number, range:string, quality:number}} opts
+ * @param {{format:'png'|'jpeg', scale:number, range:string, quality:number, transparent:boolean}} opts
  * @param {(v:number,m:string)=>void} onProgress
  * @returns {Promise<{filename:string, blob:Blob, width:number, height:number}[]>}
  */
 export async function pdfToImages(file, opts, onProgress) {
-  const { format = 'png', scale = 2, range = '', quality = 0.92 } = opts || {}
+  const { format = 'png', scale = 2, range = '', quality = 0.92, transparent = false } = opts || {}
+  const wantsTransparency = transparent && format === 'png'
   const data = new Uint8Array(await file.arrayBuffer())
   const pdf = await loadPdf(data)
   const total = pdf.numPages
@@ -32,7 +40,7 @@ export async function pdfToImages(file, opts, onProgress) {
       ctx.fillStyle = '#ffffff'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
     }
-    await page.render({ canvasContext: ctx, viewport }).promise
+    await page.render({ canvasContext: ctx, viewport, ...(wantsTransparency && { background: TRANSPARENT }) }).promise
     const ext = format === 'jpeg' ? 'jpg' : 'png'
     const blob = await canvasToBlob(canvas, format, quality)
     results.push({

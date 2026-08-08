@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.jsx'
 import ImageResult from '../../components/ImageResult.jsx'
 import { useJob } from '../../hooks/useJob.js'
 import { formatBytes } from '../../lib/format.js'
-import { decode, dimsOf } from '../../lib/imageCanvas.js'
+import { decode, dimsOf, IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 import { resizeImage } from './helpers.js'
 
 export default function ResizeImage() {
@@ -49,7 +49,7 @@ export default function ResizeImage() {
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" icon="image" />
+      <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
 
       {file && (
         <>

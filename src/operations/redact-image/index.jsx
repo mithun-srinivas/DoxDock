@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.jsx'
 import DownloadButton from '../../components/DownloadButton.jsx'
 import ImageResult from '../../components/ImageResult.jsx'
 import { useJob } from '../../hooks/useJob.js'
-import { decode, dimsOf } from '../../lib/imageCanvas.js'
+import { decode, dimsOf, IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 import RegionPicker from './RegionPicker.jsx'
 import { redactImage, STRENGTHS, DEFAULT_STRENGTH } from './helpers.js'
 
@@ -61,7 +61,7 @@ export default function RedactImage() {
         accept="image/*"
         multiple={false}
         label="Drop an image here or click to browse"
-        hint="Hide faces, names or account numbers before sharing a screenshot"
+        hint={`${IMAGE_FORMATS_HINT} — hide faces, names or account numbers before sharing a screenshot`}
         icon="image"
       />
 
