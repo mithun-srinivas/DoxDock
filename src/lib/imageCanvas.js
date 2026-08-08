@@ -12,6 +12,11 @@ const MIME = {
 
 export const FORMAT_EXT = { avif: 'avif', jpeg: 'jpg', png: 'png', webp: 'webp' }
 
+// One wording for every dropzone whose tool decodes and re-encodes through this module, so the
+// hint cannot drift from FORMAT_EXT above. Tools with their own encoder (compress-image runs
+// browser-image-compression, which has no AVIF) keep their own hint.
+export const IMAGE_FORMATS_HINT = 'JPEG, PNG, WebP, or AVIF'
+
 /** Detect whether the browser can encode the given MIME type. */
 export function canEncode(mime) {
   const canvas = document.createElement('canvas')

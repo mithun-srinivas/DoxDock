@@ -7,6 +7,7 @@ import ResultGallery from '../../components/ResultGallery.jsx'
 import { useJob } from '../../hooks/useJob.js'
 import { formatBytes } from '../../lib/format.js'
 import { adjustImages } from './helpers.js'
+import { IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 
 export default function AdjustImage() {
   const [files, setFiles] = useState([])
@@ -54,7 +55,7 @@ export default function AdjustImage() {
         accept="image/*"
         multiple
         label="Drop one or more images here or click to browse"
-        hint="JPEG, PNG, WebP, or AVIF"
+        hint={IMAGE_FORMATS_HINT}
         icon="image"
       />
 

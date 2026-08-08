@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.jsx'
 import ImageResult from '../../components/ImageResult.jsx'
 import { useJob } from '../../hooks/useJob.js'
 import { formatBytes } from '../../lib/format.js'
-import { canEncode } from '../../lib/imageCanvas.js'
+import { canEncode, IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 import { convertImage } from './helpers.js'
 
 export default function ConvertImage() {
@@ -24,7 +24,7 @@ export default function ConvertImage() {
 
   return (
     <div className="space-y-6">
-      <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" icon="image" />
+      <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
 
       {file && (
         <>
