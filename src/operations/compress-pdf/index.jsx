@@ -9,6 +9,15 @@ import { useJob } from '../../hooks/useJob.js'
 import { formatBytes, baseName } from '../../lib/format.js'
 import { compressPdf } from './helpers.js'
 
+// One click for the common cases. Every dpi here is an option the Resolution select already
+// offers and every quality sits inside the slider's 0.3-0.95 range, so a preset can never
+// leave a control showing a value it cannot represent. Medium is the existing default pair.
+const COMPRESSION_PRESETS = [
+  { id: 'low', label: 'Low', dpi: 200, quality: 0.85 },
+  { id: 'medium', label: 'Medium', dpi: 120, quality: 0.7 },
+  { id: 'high', label: 'High', dpi: 72, quality: 0.5 },
+]
+
 export default function CompressPdf() {
   const [file, setFile] = useState(null)
   const [mode, setMode] = useState('rasterize')
@@ -49,6 +58,42 @@ export default function CompressPdf() {
                 <option value="metadata">Strip metadata only (lossless; keeps text)</option>
               </select>
             </label>
+
+            {mode === 'rasterize' && (
+              <div className="space-y-1">
+                <span className="field-label">Preset</span>
+                <div className="flex flex-wrap gap-2">
+                  {COMPRESSION_PRESETS.map((preset) => {
+                    const active = Number(dpi) === preset.dpi && Number(quality) === preset.quality
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => {
+                          setDpi(preset.dpi)
+                          setQuality(preset.quality)
+                        }}
+                        className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                          active
+                            ? 'border-brand-600 bg-brand-600 text-white'
+                            : 'border-slate-300 hover:border-brand-600 dark:border-slate-600'
+                        }`}
+                      >
+                        {preset.label}
+                        <span className={`ml-1.5 text-xs ${active ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
+                          {preset.dpi} dpi · {Math.round(preset.quality * 100)}%
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+                {/* "High" is ambiguous on its own — say which way it goes. */}
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Higher compression means a smaller file and a softer page. The sliders below stay editable.
+                </p>
+              </div>
+            )}
 
             {mode === 'rasterize' && (
               <div className="grid gap-4 sm:grid-cols-2">
