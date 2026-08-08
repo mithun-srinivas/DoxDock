@@ -2,7 +2,10 @@ import * as ort from 'onnxruntime-web'
 import { decode, dimsOf, canvasToBlob } from '../../lib/imageCanvas.js'
 import { outName } from '../../lib/imageFormat.js'
 
-ort.env.wasm.wasmPaths = '/ort/'
+ort.env.wasm.wasmPaths = {
+  'ort-wasm-simd-threaded.mjs': '/ort/ort-wasm-simd-threaded.mjs',
+  'ort-wasm-simd-threaded.wasm': '/ort/ort-wasm-simd-threaded.wasm',
+}
 ort.env.wasm.numThreads = 1
 
 const MODEL_SIZE = 320
@@ -10,12 +13,17 @@ let _session = null
 
 async function getSession() {
   if (!_session) {
-    _session = await ort.InferenceSession.create(
-      '/models/u2net/u2netp.onnx',
-      {
-        executionProviders: ['wasm'],
-      }
-    )
+    const modelResponse = await fetch('/models/u2net/u2netp.onnx')
+
+    if (!modelResponse.ok) {
+      throw new Error(`Model fetch failed: ${modelResponse.status}`)
+    }
+
+    const modelBuffer = await modelResponse.arrayBuffer()
+
+    _session = await ort.InferenceSession.create(modelBuffer, {
+      executionProviders: ['wasm'],
+    })
   }
 
   return _session
@@ -43,6 +51,9 @@ function normalizeMask(data) {
 }
 
 export async function removeBackground(file, onProgress) {
+  const inputType = file.type
+  let outputType
+
   onProgress?.(0.1, 'Loading model…')
   const session = await getSession()
 
@@ -100,9 +111,16 @@ export async function removeBackground(file, onProgress) {
   }
   ctx.putImageData(imageData, 0, 0)
 
+  // Determine output format, keep png format as png and conver the rest to webp to reduce the size of the file
+  if (inputType === 'image/png') {
+    outputType = 'png'
+  } else {
+    outputType = 'webp'
+  }
+
   onProgress?.(0.9, 'Encoding…')
-  const blob = await canvasToBlob(outCanvas, 'png')
+  const blob = await canvasToBlob(outCanvas, outputType)
 
   onProgress?.(1, 'Done')
-  return { blob, filename: outName(file.name, 'png', '-no-bg'), before: file.size, after: blob.size, width, height }
+  return { blob, filename: outName(file.name, outputType, '-no-bg'), before: file.size, after: blob.size, width, height }
 }
