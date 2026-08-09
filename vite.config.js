@@ -27,7 +27,7 @@ export default defineConfig({
       // Precache everything the app needs, including the pdf.js worker and wasm.
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2,wasm}'],
-        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: 25 * 1024 * 1024,
         // Never fall back to the network for navigations — offline-first.
         navigateFallback: 'index.html',
       },

@@ -1,4 +1,4 @@
-import * as ort from 'onnxruntime-web'
+import * as ort from 'onnxruntime-web/wasm'
 import { decode, dimsOf, canvasToBlob } from '../../lib/imageCanvas.js'
 import { outName } from '../../lib/imageFormat.js'
 
@@ -7,6 +7,7 @@ ort.env.wasm.wasmPaths = {
   'ort-wasm-simd-threaded.wasm': '/ort/ort-wasm-simd-threaded.wasm',
 }
 ort.env.wasm.numThreads = 1
+ort.env.wasm.proxy = false
 
 const MODEL_SIZE = 320
 let _session = null
@@ -14,18 +15,12 @@ let _session = null
 async function getSession() {
   if (!_session) {
     const modelResponse = await fetch('/models/u2net/u2netp.onnx')
-
-    if (!modelResponse.ok) {
-      throw new Error(`Model fetch failed: ${modelResponse.status}`)
-    }
-
+    if (!modelResponse.ok) throw new Error(`Model fetch failed: ${modelResponse.status}`)
     const modelBuffer = await modelResponse.arrayBuffer()
-
     _session = await ort.InferenceSession.create(modelBuffer, {
       executionProviders: ['wasm'],
     })
   }
-
   return _session
 }
 
@@ -51,9 +46,6 @@ function normalizeMask(data) {
 }
 
 export async function removeBackground(file, onProgress) {
-  const inputType = file.type
-  let outputType
-
   onProgress?.(0.1, 'Loading model…')
   const session = await getSession()
 
@@ -61,7 +53,6 @@ export async function removeBackground(file, onProgress) {
   const bitmap = await decode(file)
   const { width, height } = dimsOf(bitmap)
 
-  // Resize to model input
   const inputCanvas = document.createElement('canvas')
   inputCanvas.width = MODEL_SIZE
   inputCanvas.height = MODEL_SIZE
@@ -69,14 +60,11 @@ export async function removeBackground(file, onProgress) {
 
   onProgress?.(0.5, 'Running AI model…')
   const tensor = imageToTensor(inputCanvas)
-  const inputName = session.inputNames[0]
-  const outputName = session.outputNames[0]
-  const { [outputName]: output } = await session.run({ [inputName]: tensor })
+  const { [session.outputNames[0]]: output } = await session.run({ [session.inputNames[0]]: tensor })
 
   onProgress?.(0.75, 'Applying mask…')
   const mask = normalizeMask(output.data)
 
-  // Draw original image and apply mask as alpha
   const outCanvas = document.createElement('canvas')
   outCanvas.width = width
   outCanvas.height = height
@@ -99,7 +87,6 @@ export async function removeBackground(file, onProgress) {
   }
   maskCtx.putImageData(maskImageData, 0, 0)
 
-  // Scale mask back to original size via a temp canvas
   const scaledMaskCanvas = document.createElement('canvas')
   scaledMaskCanvas.width = width
   scaledMaskCanvas.height = height
@@ -111,16 +98,9 @@ export async function removeBackground(file, onProgress) {
   }
   ctx.putImageData(imageData, 0, 0)
 
-  // Determine output format, keep png format as png and conver the rest to webp to reduce the size of the file
-  if (inputType === 'image/png') {
-    outputType = 'png'
-  } else {
-    outputType = 'webp'
-  }
-
+  const outputType = file.type === 'image/png' ? 'png' : 'webp'
   onProgress?.(0.9, 'Encoding…')
   const blob = await canvasToBlob(outCanvas, outputType)
-
   onProgress?.(1, 'Done')
   return { blob, filename: outName(file.name, outputType, '-no-bg'), before: file.size, after: blob.size, width, height }
 }
