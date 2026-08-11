@@ -7,6 +7,14 @@ export default [
   { ignores: ['dist/**', 'scripts/**'] },
   js.configs.recommended,
   {
+    files: ['e2e/**', 'playwright.config.mjs'],
+    languageOptions: {
+      globals: globals.node,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       globals: globals.browser,
