@@ -1,16 +1,17 @@
 {
   "name": "doxdock",
-  "version": "1.2.0",
+  "version": "1.6.0",
   "description": "Offline-first, 100% client-side document & image utilities. Nothing you upload ever leaves your machine.",
   "type": "module",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "gen:icons": "node scripts/generate-icons.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",
@@ -24,6 +25,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.20",
     "jsdom": "^29.1.1",

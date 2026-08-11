@@ -1,12 +1,28 @@
 import { useRef, useState, useCallback, useId } from 'react'
 import Icon from './Icon.jsx'
-import { cx } from '../lib/format.js'
+import Note from './Note.jsx'
+import { cx, formatBytes } from '../lib/format.js'
+import { useFileDrop } from '../hooks/useFileDrop.js'
+import { usePasteFiles } from '../hooks/usePasteFiles.js'
 
-// Reusable drag-and-drop dropzone + file picker. Keyboard accessible (Enter/Space
-// opens the picker). Files never leave the browser — they are handed straight to
-// the calling operation.
+// Past this, a browser-side job is slow enough (and memory-hungry enough) to be
+// worth a heads-up before the user waits on it. Advisory only — nothing here
+// blocks or rejects a file.
+const LARGE_FILE_BYTES = 100 * 1024 * 1024 // ~100 MB
+
+const asArray = (value) => (value == null ? [] : Array.isArray(value) ? value : [value])
+
+// Reusable drag-and-drop dropzone + file picker, also accepting a clipboard paste.
+// Keyboard accessible (Enter/Space opens the picker). Files never leave the
+// browser — they are handed straight to the calling operation.
+//
+// `files` is optional: pass the operation's own selection when it can be cleared
+// or items removed, so the large-file heads-up tracks it exactly. Left out, the
+// heads-up reflects the most recent pick, which is right for the single-file
+// tools that simply replace their selection.
 export default function Dropzone({
   onFiles,
+  files,
   accept,
   multiple = true,
   label = 'Drop files here or click to browse',
@@ -15,12 +31,19 @@ export default function Dropzone({
 }) {
   const inputRef = useRef(null)
   const [dragging, setDragging] = useState(false)
+  const [picked, setPicked] = useState([])
   const id = useId()
+
+  const selected = files === undefined ? picked : asArray(files)
+  const oversized = selected.filter((f) => f && f.size > LARGE_FILE_BYTES)
 
   const handleFiles = useCallback(
     (fileList) => {
       const files = Array.from(fileList || [])
-      if (files.length) onFiles(multiple ? files : [files[0]])
+      if (!files.length) return
+      const chosen = multiple ? files : [files[0]]
+      setPicked(chosen)
+      onFiles(chosen)
     },
     [onFiles, multiple],
   )
@@ -36,7 +59,18 @@ export default function Dropzone({
 
   const open = () => inputRef.current?.click()
 
+  // Route window-wide drops (anywhere outside this box) into the same file pipeline.
+  const onWindowFileDrop = useCallback(
+    (file) => handleFiles([file]),
+    [handleFiles],
+  )
+  useFileDrop(onWindowFileDrop)
+
+  // Same for a clipboard paste, filtered by this tool's `accept`.
+  usePasteFiles(handleFiles, accept)
+
   return (
+    <>
     <div
       role="button"
       tabIndex={0}
@@ -75,6 +109,9 @@ export default function Dropzone({
       </span>
       <div>
         <p className="font-medium text-slate-700 dark:text-slate-200">{label}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          …or paste one from the clipboard
+        </p>
         {hint && (
           <p id={`${id}-hint`} className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {hint}
@@ -93,5 +130,20 @@ export default function Dropzone({
         }}
       />
     </div>
+    {oversized.length > 0 && (
+      <Note type="warning" title="Large file — this may take a while" className="mt-3">
+        {oversized.length === 1 ? (
+          <>
+            <span className="font-medium">{oversized[0].name}</span> is{' '}
+            {formatBytes(oversized[0].size)}.
+          </>
+        ) : (
+          <>{oversized.length} of the selected files are over {formatBytes(LARGE_FILE_BYTES)}.</>
+        )}{' '}
+        Everything still runs locally in this tab, so expect a slower job and higher memory use —
+        and keep the tab open until it finishes. You can carry on regardless.
+      </Note>
+    )}
+    </>
   )
 }

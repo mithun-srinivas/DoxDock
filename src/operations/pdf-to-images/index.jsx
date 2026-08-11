@@ -14,7 +14,8 @@ export default function PdfToImages() {
   const [format, setFormat] = useState('png')
   const [scale, setScale] = useState(2)
   const [range, setRange] = useState('')
-  const { running, progress, error, result, run, reset } = useJob()
+  const [transparent, setTransparent] = useState(false)
+  const { running, progress, error, result, run, reset, slow, cancel } = useJob()
   const { pageCount } = usePdfPageCount(file)
 
   // Range is optional here — empty means "all pages" and is valid. Only
@@ -39,7 +40,7 @@ export default function PdfToImages() {
   }
 
   const convert = () =>
-    run((onProgress) => pdfToImages(file, { format, scale: Number(scale), range }, onProgress))
+    run((onProgress) => pdfToImages(file, { format, scale: Number(scale), range, transparent }, onProgress))
 
   return (
     <div className="space-y-6">
@@ -83,12 +84,29 @@ export default function PdfToImages() {
                 {rangeError && <span className="block text-xs text-red-600 dark:text-red-400">{rangeError}</span>}
               </label>
             </div>
+
+            {/* JPEG has no alpha channel, so the option is only meaningful for PNG. */}
+            {format === 'png' && (
+              <label className="mt-4 flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={transparent} onChange={(e) => setTransparent(e.target.checked)} />
+                Transparent background (keep unpainted areas see-through)
+              </label>
+            )}
           </div>
 
-          <button type="button" className="btn-primary" onClick={convert} disabled={running || !!rangeError}>
-            <Icon name="image" className="h-4 w-4" />
-            Convert to images
-          </button>
+          <div className="flex items-center gap-3">
+            <button type="button" className="btn-primary" onClick={convert} disabled={running || !!rangeError}>
+              <Icon name="image" className="h-4 w-4" />
+              Convert to images
+            </button>
+            {running && slow && (
+              <button type="button" onClick={cancel}
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-red-500 bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 hover:border-red-600 transition-colors">
+                <Icon name="x" className="h-4 w-4" />
+                Cancel
+              </button>
+            )}
+          </div>
         </>
       )}
 

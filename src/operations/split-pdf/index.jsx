@@ -13,6 +13,7 @@ export default function SplitPdf() {
   const [file, setFile] = useState(null)
   const [mode, setMode] = useState('explode')
   const [ranges, setRanges] = useState('')
+  const [sizeMb, setSizeMb] = useState(5)
   const { running, progress, error, result, run, reset } = useJob()
   const { pageCount } = usePdfPageCount(file)
 
@@ -37,7 +38,7 @@ export default function SplitPdf() {
     setFile(files[0])
     reset()
   }
-  const go = () => run((p) => splitPdf(file, { mode, ranges }, p))
+  const go = () => run((p) => splitPdf(file, { mode, ranges, sizeMb }, p))
 
   return (
     <div className="space-y-6">
@@ -62,7 +63,32 @@ export default function SplitPdf() {
                 <input type="radio" name="mode" checked={mode === 'ranges'} onChange={() => setMode('ranges')} />
                 Page ranges — one PDF per range
               </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="radio" name="mode" checked={mode === 'size'} onChange={() => setMode('size')} />
+                By size — pack pages so each PDF stays under a target
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="radio" name="mode" checked={mode === 'bookmarks'} onChange={() => setMode('bookmarks')} />
+                By bookmarks — one PDF per top-level bookmark (chapter)
+              </label>
             </fieldset>
+            {mode === 'size' && (
+              <label className="block space-y-1">
+                <span className="field-label">Target size per file (MB)</span>
+                <input
+                  className="field-input"
+                  type="number"
+                  min="0.05"
+                  step="0.5"
+                  value={sizeMb}
+                  onChange={(e) => setSizeMb(e.target.value)}
+                />
+                <span className="text-xs text-slate-500">Best-effort: a single page larger than the target becomes its own file (marked <code>-oversize</code>).</span>
+              </label>
+            )}
+            {mode === 'bookmarks' && (
+              <p className="text-xs text-slate-500">Splits at each top-level bookmark. A PDF with no bookmarks reports a clear message.</p>
+            )}
             {mode === 'ranges' && (
               <label className="block space-y-1">
                 <span className="field-label">Ranges (comma-separated groups)</span>
@@ -83,7 +109,7 @@ export default function SplitPdf() {
             type="button"
             className="btn-primary"
             onClick={go}
-            disabled={running || (mode === 'ranges' && (!ranges.trim() || !!rangeError))}
+            disabled={running || (mode === 'ranges' && (!ranges.trim() || !!rangeError)) || (mode === 'size' && !(Number(sizeMb) > 0))}
           >
             <Icon name="scissors" className="h-4 w-4" />
             Split PDF
