@@ -7,10 +7,8 @@ import Icon from "../../components/Icon.jsx"
 import { useJob } from "../../hooks/useJob.js"
 import { formatBytes } from "../../lib/format.js"
 import { convertImagetoGreyscale } from "./helper.js"
-<<<<<<< HEAD
 import { IMAGE_FORMATS_HINT } from "../../lib/imageCanvas.js"
-=======
->>>>>>> main
+import { IMAGE_FORMATS_HINT } from "../../lib/imageCanvas.js"
 
 
 export default function ConvertImagetoGreyscale() {
@@ -25,11 +23,9 @@ export default function ConvertImagetoGreyscale() {
 
     return (
         <div className="space-y-6">
-<<<<<<< HEAD
             <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
-=======
             <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" icon="image" />
->>>>>>> main
+            <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
 
             {file && (
                 <>

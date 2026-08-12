@@ -7,10 +7,8 @@ import ResultGallery from '../../components/ResultGallery.jsx'
 import { useJob } from '../../hooks/useJob.js'
 import { formatBytes } from '../../lib/format.js'
 import { watermarkImages, POSITIONS } from './helpers.js'
-<<<<<<< HEAD
 import { IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
-=======
->>>>>>> main
+import { IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 
 export default function WatermarkImage() {
   const [files, setFiles] = useState([])
@@ -55,11 +53,9 @@ export default function WatermarkImage() {
         accept="image/*"
         multiple
         label="Drop images here or click to browse"
-<<<<<<< HEAD
         hint={`${IMAGE_FORMATS_HINT} — one image or a whole batch, all getting the same mark`}
-=======
         hint="Watermark one image or a whole batch — all of them get the same mark"
->>>>>>> main
+        hint={`${IMAGE_FORMATS_HINT} — one image or a whole batch, all getting the same mark`}
         icon="image"
       />
 

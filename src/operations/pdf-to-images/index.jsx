@@ -14,10 +14,8 @@ export default function PdfToImages() {
   const [format, setFormat] = useState('png')
   const [scale, setScale] = useState(2)
   const [range, setRange] = useState('')
-<<<<<<< HEAD
   const [transparent, setTransparent] = useState(false)
-=======
->>>>>>> main
+  const [transparent, setTransparent] = useState(false)
   const { running, progress, error, result, run, reset, slow, cancel } = useJob()
   const { pageCount } = usePdfPageCount(file)
 
