@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -5,6 +6,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 // DoxDock is a 100% client-side static app. No dev/prod proxy, no external hosts.
 // The service worker precaches every asset so the app runs fully offline.
 export default defineConfig({
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.{js,jsx}'],
+  },
   plugins: [
     react(),
     VitePWA({
