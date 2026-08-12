@@ -54,8 +54,6 @@ export default function WatermarkImage() {
         multiple
         label="Drop images here or click to browse"
         hint={`${IMAGE_FORMATS_HINT} — one image or a whole batch, all getting the same mark`}
-        hint="Watermark one image or a whole batch — all of them get the same mark"
-        hint={`${IMAGE_FORMATS_HINT} — one image or a whole batch, all getting the same mark`}
         icon="image"
       />
 

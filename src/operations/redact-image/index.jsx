@@ -64,8 +64,6 @@ export default function RedactImage() {
         multiple={false}
         label="Drop an image here or click to browse"
         hint={`${IMAGE_FORMATS_HINT} — hide faces, names or account numbers before sharing a screenshot`}
-        hint="Hide faces, names or account numbers before sharing a screenshot"
-        hint={`${IMAGE_FORMATS_HINT} — hide faces, names or account numbers before sharing a screenshot`}
         icon="image"
       />
 
