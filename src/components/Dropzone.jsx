@@ -3,6 +3,7 @@ import Icon from './Icon.jsx'
 import Note from './Note.jsx'
 import { cx, formatBytes } from '../lib/format.js'
 import { useFileDrop } from '../hooks/useFileDrop.js'
+import { usePasteFiles } from '../hooks/usePasteFiles.js'
 
 // Past this, a browser-side job is slow enough (and memory-hungry enough) to be
 // worth a heads-up before the user waits on it. Advisory only — nothing here
@@ -11,9 +12,9 @@ const LARGE_FILE_BYTES = 100 * 1024 * 1024 // ~100 MB
 
 const asArray = (value) => (value == null ? [] : Array.isArray(value) ? value : [value])
 
-// Reusable drag-and-drop dropzone + file picker. Keyboard accessible (Enter/Space
-// opens the picker). Files never leave the browser — they are handed straight to
-// the calling operation.
+// Reusable drag-and-drop dropzone + file picker, also accepting a clipboard paste.
+// Keyboard accessible (Enter/Space opens the picker). Files never leave the
+// browser — they are handed straight to the calling operation.
 //
 // `files` is optional: pass the operation's own selection when it can be cleared
 // or items removed, so the large-file heads-up tracks it exactly. Left out, the
@@ -65,6 +66,9 @@ export default function Dropzone({
   )
   useFileDrop(onWindowFileDrop)
 
+  // Same for a clipboard paste, filtered by this tool's `accept`.
+  usePasteFiles(handleFiles, accept)
+
   return (
     <>
     <div
@@ -105,6 +109,9 @@ export default function Dropzone({
       </span>
       <div>
         <p className="font-medium text-slate-700 dark:text-slate-200">{label}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          …or paste one from the clipboard
+        </p>
         {hint && (
           <p id={`${id}-hint`} className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {hint}
