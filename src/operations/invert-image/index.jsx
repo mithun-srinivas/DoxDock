@@ -7,7 +7,10 @@ import Icon from "../../components/Icon.jsx"
 import { invertImage } from "./helper"
 import { useJob } from "../../hooks/useJob.js"
 import { formatBytes } from "../../lib/format.js"
+<<<<<<< HEAD
 import { IMAGE_FORMATS_HINT } from "../../lib/imageCanvas.js"
+=======
+>>>>>>> main
 
 
 export default function InvertImage() {
@@ -22,7 +25,11 @@ export default function InvertImage() {
 
     return (
         <div className="space-y-6">
+<<<<<<< HEAD
             <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
+=======
+            <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" icon="image" />
+>>>>>>> main
 
             {file && (
                 <>
