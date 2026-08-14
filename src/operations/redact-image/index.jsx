@@ -7,8 +7,6 @@ import DownloadButton from '../../components/DownloadButton.jsx'
 import ImageResult from '../../components/ImageResult.jsx'
 import { useJob } from '../../hooks/useJob.js'
 import { decode, dimsOf, IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
-import { decode, dimsOf } from '../../lib/imageCanvas.js'
-import { decode, dimsOf, IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 import RegionPicker from './RegionPicker.jsx'
 import { redactImage, STRENGTHS, DEFAULT_STRENGTH } from './helpers.js'
 

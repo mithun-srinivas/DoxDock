@@ -8,7 +8,6 @@ import { useJob } from '../../hooks/useJob.js'
 import { formatBytes } from '../../lib/format.js'
 import { watermarkImages, POSITIONS } from './helpers.js'
 import { IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
-import { IMAGE_FORMATS_HINT } from '../../lib/imageCanvas.js'
 
 export default function WatermarkImage() {
   const [files, setFiles] = useState([])

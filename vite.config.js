@@ -20,6 +20,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['onnxruntime-web'],
+  },
   test: {
     environment: 'node',
     include: ['src/**/*.test.{js,jsx}'],
