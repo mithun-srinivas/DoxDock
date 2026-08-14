@@ -1,4 +1,5 @@
-import { Document, Packer, Paragraph, TextRun, PageBreak } from 'docx'
+import * as docx from "docx"
+const { Document, Packer, Paragraph, TextRun, PageBreak } = docx
 import { extractPdfText } from '../../lib/extractText.js'
 
 /** Convert a PDF's extracted text into a .docx Blob. */

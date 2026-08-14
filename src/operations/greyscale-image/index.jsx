@@ -23,6 +23,8 @@ export default function ConvertImagetoGreyscale() {
     return (
         <div className="space-y-6">
             <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
+            <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" icon="image" />
+            <Dropzone onFiles={pick} accept="image/*" multiple={false} label="Drop an image here or click to browse" hint={IMAGE_FORMATS_HINT} icon="image" />
 
             {file && (
                 <>
