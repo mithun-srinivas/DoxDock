@@ -3,8 +3,8 @@ import { decode, dimsOf, canvasToBlob } from '../../lib/imageCanvas.js'
 import { outName } from '../../lib/imageFormat.js'
 
 ort.env.wasm.wasmPaths = {
-  'ort-wasm-simd-threaded.mjs': '/ort/ort-wasm-simd-threaded.mjs',
-  'ort-wasm-simd-threaded.wasm': '/ort/ort-wasm-simd-threaded.wasm',
+  mjs: '/ort/ort-wasm-simd-threaded.mjs',
+  wasm: '/ort/ort-wasm-simd-threaded.wasm',
 }
 ort.env.wasm.numThreads = 1
 ort.env.wasm.proxy = false

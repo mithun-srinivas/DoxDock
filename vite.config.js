@@ -21,6 +21,16 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['onnxruntime-web'],
   },
+  // onnxruntime-web ships two entry variants per subpath, selected by the
+  // `onnxruntime-web-use-extern-wasm` export condition. The default "bundle"
+  // variants inline emscripten glue with a literal `new URL("*.wasm",
+  // import.meta.url)`, which Vite rewrites into dist/assets as a duplicate of
+  // the files already served from /ort/ (issue #133). The extern-wasm variants
+  // load glue + wasm at runtime from ort.env.wasm.wasmPaths instead, so nothing
+  // is emitted — the single copy in public/ort/ is the only one deployed.
+  resolve: {
+    conditions: ['onnxruntime-web-use-extern-wasm'],
+  },
   test: {
     environment: 'node',
     include: ['src/**/*.test.{js,jsx}'],
