@@ -1,0 +1,14 @@
+package.json
+  h_ff7e4b9993d59a 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2c9386c895f0ad187b19e04bf873fe1fb1e9cdd2",
+  "prompts": {},
+  "humans": {
+    "h_ff7e4b9993d59a": {
+      "author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
