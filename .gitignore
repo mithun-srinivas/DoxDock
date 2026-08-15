@@ -4,6 +4,8 @@ node_modules/
 # build output
 dist/
 dev-dist/
+extension/build/
+extension/*.zip
 
 # playwright
 test-results/
