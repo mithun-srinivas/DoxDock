@@ -5,6 +5,10 @@ node_modules/
 dist/
 dev-dist/
 
+# playwright
+test-results/
+playwright-report/
+
 # logs
 npm-debug.log*
 yarn-debug.log*
