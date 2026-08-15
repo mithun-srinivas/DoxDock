@@ -1,0 +1,36 @@
+src/App.jsx
+  s_98b591397cb212::t_d3af4db9151f79 17-21,27-29,37-41,47-52
+extension/build-extension.mjs
+  s_98b591397cb212::t_2604c6ad2de6c8 20,51,56-81
+  s_98b591397cb212::t_fa09d089740506 45-49
+  s_98b591397cb212::t_884ad1f4d6e6d0 17-19
+  s_98b591397cb212::t_8cfe0cdd878ff9 21-23,42-44
+  s_98b591397cb212::t_5a9a0310ae9c96 50
+  s_98b591397cb212::t_c16095c2df1784 52-55
+  s_98b591397cb212::t_a167fb9374bcb3 82-84
+  s_98b591397cb212::t_6c6010a6aa7810 1-16,24-41
+src/operations/edit-pdf/index.jsx
+  s_98b591397cb212::t_9f09f01e84416e 439-442
+.gitignore
+  s_98b591397cb212::t_007609602ff669 7-8
+extension/README.md
+  s_98b591397cb212::t_59270283837006 1-64
+package.json
+  s_98b591397cb212::t_ce8921b0412493 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "06b65497aa7d3e708ce7b540d7bcb503f076e4d6",
+  "prompts": {},
+  "sessions": {
+    "s_98b591397cb212": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d54973ed-89b7-4bec-aa50-d243fc7f80a8",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
