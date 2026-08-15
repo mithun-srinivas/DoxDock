@@ -436,7 +436,10 @@ export default function EditPdf() {
     exportJob.run((p) => exportEditedPdf(bytesRef.current, annos, p).then((blob) => ({ blob, filename: finalName() })))
 
   const openStandalone = () => {
-    const url = `${window.location.origin}/edit-pdf?standalone=1`
+    const isExt = /^(chrome|moz)-extension:$/.test(window.location.protocol)
+    const url = isExt
+      ? `${window.location.origin}/index.html?standalone=1#/edit-pdf`
+      : `${window.location.origin}/edit-pdf?standalone=1`
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 

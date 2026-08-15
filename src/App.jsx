@@ -14,12 +14,19 @@ import { useSeo } from './hooks/useSeo.js'
 import { getOperation } from './registry/registry.js'
 import { emitFileDrop } from './lib/fileDropBus.js'
 
+// Inside a browser extension (chrome-extension://…) a path like "/merge-pdfs"
+// is a real file lookup, so it 404s on reload. There we use hash routing, which
+// always reloads to index.html. On the web we keep clean path routing for SEO.
+export const IS_EXTENSION = /^(chrome|moz)-extension:$/.test(window.location.protocol)
+
 // Path routing for SEO — each tool gets its own crawlable URL ("/merge-pdfs").
 // "/" (or an unknown path) → Home landing page (activeId === null).
 // Legacy hash links ("/#/merge-pdfs") are redirected to the path form on load.
 function useRouteSelection() {
   const parse = () => {
-    const raw = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, '')
+    const raw = IS_EXTENSION
+      ? window.location.hash.replace(/^#\/?/, '')
+      : decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, '')
     if (!raw || raw === 'home') return null
     return getOperation(raw) ? raw : null
   }
@@ -27,12 +34,22 @@ function useRouteSelection() {
 
   const select = useCallback((id) => {
     setActiveId(id)
+    if (IS_EXTENSION) {
+      const target = id ? `#/${id}` : '#/'
+      if (window.location.hash !== target) window.location.hash = target
+      return
+    }
     const target = id ? `/${id}` : '/'
     if (window.location.pathname !== target) window.history.pushState({}, '', target)
   }, [])
 
   useEffect(() => {
-    // Redirect old hash-style links ("/#/merge-pdfs") to the path form.
+    if (IS_EXTENSION) {
+      const onHash = () => setActiveId(parse())
+      window.addEventListener('hashchange', onHash)
+      return () => window.removeEventListener('hashchange', onHash)
+    }
+    // Web: redirect old hash-style links ("/#/merge-pdfs") to the path form.
     const legacy = window.location.hash.match(/^#\/?(.*)$/)
     if (legacy) {
       const id = legacy[1] === 'home' ? '' : legacy[1]
