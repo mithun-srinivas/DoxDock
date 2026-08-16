@@ -1,0 +1,14 @@
+README.md
+  h_ff7e4b9993d59a 7,21-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f3ea85baadd292d6bf4e89a6249dd0e6cb272d14",
+  "prompts": {},
+  "humans": {
+    "h_ff7e4b9993d59a": {
+      "author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
