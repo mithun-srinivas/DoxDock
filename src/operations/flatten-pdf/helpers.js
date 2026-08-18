@@ -189,7 +189,7 @@ export async function flattenPdf(file, onProgress) {
   }
 
   onProgress?.(0.35, 'Flattening form fields…')
-  let fields = 0
+  let fields
   try {
     const form = doc.getForm()
     fields = form.getFields().length

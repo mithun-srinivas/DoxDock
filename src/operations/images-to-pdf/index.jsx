@@ -6,7 +6,6 @@ import Note from '../../components/Note.jsx'
 import DownloadButton from '../../components/DownloadButton.jsx'
 import Icon from '../../components/Icon.jsx'
 import { useJob } from '../../hooks/useJob.js'
-import { dedupeFiles, skippedNotice } from '../../lib/dedupeFiles.js'
 import { imagesToPdf } from './helpers.js'
 
 export default function ImagesToPdf() {
@@ -22,7 +21,7 @@ export default function ImagesToPdf() {
       !files.some((existing) => existing.name === f.name && existing.size === f.size)
     );
     if (newFiles.length === 0 && incoming.length > 0) {
-      setError("All selected files are duplicates.");
+      setNotice("All selected files are duplicates.");
       return;
     }
     setFiles((prev) => [

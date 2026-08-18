@@ -1,0 +1,7 @@
+dist/
+node_modules/
+*.lock
+public/
+scripts/
+design/
+docs/
