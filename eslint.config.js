@@ -4,12 +4,20 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
 
 export default [
-  { ignores: ['dist/**', 'scripts/**'] },
+  { ignores: ['dist/**', 'public/**', 'scripts/**'] },
   js.configs.recommended,
   {
     files: ['e2e/**', 'playwright.config.mjs'],
     languageOptions: {
       globals: globals.node,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+  },
+  {
+    files: ['extension/**'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.webextensions },
       ecmaVersion: 'latest',
       sourceType: 'module',
     },
