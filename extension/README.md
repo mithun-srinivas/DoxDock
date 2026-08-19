@@ -62,3 +62,22 @@ See the steps in the project release notes, or the short version:
    no network requests. This is easy to justify: it is open source and the CSP
    allows only same-origin loads.
 5. Submit for review. Approval usually takes a few days.
+
+## Auto-upload on release (CI)
+
+The workflow `.github/workflows/publish-extension.yml` runs when a GitHub release
+is published. It builds the app, packages the extension, and uploads the new
+version to the Chrome Web Store as a **draft** (it does not publish it, so you
+review and click Publish yourself in the dashboard).
+
+It needs three repository secrets (Settings > Secrets and variables > Actions):
+
+- `CWS_CLIENT_ID`
+- `CWS_CLIENT_SECRET`
+- `CWS_REFRESH_TOKEN`
+
+Get them from a Google Cloud project with the Chrome Web Store API enabled. The
+`npx chrome-webstore-upload-keys` helper walks you through the OAuth consent flow
+and prints the refresh token. Until these secrets exist, the upload step is
+skipped, so releases never fail. The version comes from `package.json`, which the
+release flow already bumps, so each upload has a fresh version number.
