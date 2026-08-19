@@ -1,0 +1,21 @@
+.github/workflows/publish-extension.yml
+  s_98b591397cb212::t_0c16f2c83a740f 1-53
+extension/README.md
+  s_98b591397cb212::t_66cf5dbad93b4c 65-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1376826c58bf3fd36616c1e9a84be95439625d59",
+  "prompts": {},
+  "sessions": {
+    "s_98b591397cb212": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d54973ed-89b7-4bec-aa50-d243fc7f80a8",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
