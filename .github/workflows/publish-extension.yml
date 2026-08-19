@@ -1,0 +1,53 @@
+name: Publish extension to Chrome Web Store
+
+# When a GitHub release is published, build the extension and upload the new
+# version to the Chrome Web Store as a DRAFT. It is NOT auto-published: review it
+# in the Web Store dashboard and click Publish yourself when you are ready.
+#
+# One-time setup: add these repository secrets
+# (Settings > Secrets and variables > Actions), from a Google Cloud project with
+# the Chrome Web Store API enabled (`npx chrome-webstore-upload-keys` helps mint
+# the refresh token):
+#   CWS_CLIENT_ID, CWS_CLIENT_SECRET, CWS_REFRESH_TOKEN
+# Until those exist, the upload step is skipped so releases never fail.
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload:
+    name: Build and upload extension (draft)
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    env:
+      HAS_CREDS: ${{ secrets.CWS_REFRESH_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build the app and package the extension
+        run: |
+          npm run build
+          node extension/build-extension.mjs
+
+      - name: Zip the extension (manifest at the zip root)
+        run: cd extension/build && zip -rq ../../extension.zip .
+
+      - name: Upload to Chrome Web Store as a draft (not published)
+        if: env.HAS_CREDS == 'true'
+        run: npx --yes chrome-webstore-upload-cli@3 upload --source extension.zip --extension-id cdfjoacadlmfmgnfkfnpofokhapihbol
+        env:
+          CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+
+      - name: Explain skip when credentials are missing
+        if: env.HAS_CREDS != 'true'
+        run: echo "::notice::CWS_* secrets are not set, so the Chrome Web Store upload was skipped. Add CWS_CLIENT_ID, CWS_CLIENT_SECRET and CWS_REFRESH_TOKEN to enable auto-upload on release."
