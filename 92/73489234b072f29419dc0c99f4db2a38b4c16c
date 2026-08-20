@@ -1,0 +1,29 @@
+.github/ISSUE_TEMPLATE/bug_report.md
+  s_98b591397cb212::t_ecd595ba4b4b15 1-31
+.github/ISSUE_TEMPLATE/config.yml
+  s_98b591397cb212::t_f83d86fc644d04 1-8
+.github/ISSUE_TEMPLATE/feature_request.md
+  s_98b591397cb212::t_43eadc2f0d55cf 1-20
+CODE_OF_CONDUCT.md
+  s_98b591397cb212::t_b13dfb494ab59e 1-130
+.github/PULL_REQUEST_TEMPLATE.md
+  s_98b591397cb212::t_b842773402bb17 1-21
+SECURITY.md
+  s_98b591397cb212::t_3fde70bea72986 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9273489234b072f29419dc0c99f4db2a38b4c16c",
+  "prompts": {},
+  "sessions": {
+    "s_98b591397cb212": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d54973ed-89b7-4bec-aa50-d243fc7f80a8",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "mithun-srinivas <62088969+mithun-srinivas@users.noreply.github.com>"
+    }
+  }
+}
