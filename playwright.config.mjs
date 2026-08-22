@@ -12,6 +12,9 @@ export default defineConfig({
     command: 'npm run build && npm run preview',
     port: 4173,
     reuseExistingServer: !process.env.CI,
-    timeout: 15000,
+    // The production build (vite + prerender) can exceed 15s in CI,
+    // especially on cold caches; 60s gives it room without slowing
+    // local runs (reuseExistingServer skips this entirely outside CI).
+    timeout: 60000,
   },
 })
