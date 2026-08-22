@@ -14,6 +14,7 @@ export default function SplitPdf() {
   const [mode, setMode] = useState('explode')
   const [ranges, setRanges] = useState('')
   const [sizeMb, setSizeMb] = useState(5)
+  const [everyN, setEveryN] = useState(2)
   const { running, progress, error, result, run, reset } = useJob()
   const { pageCount } = usePdfPageCount(file)
 
@@ -38,7 +39,7 @@ export default function SplitPdf() {
     setFile(files[0])
     reset()
   }
-  const go = () => run((p) => splitPdf(file, { mode, ranges, sizeMb }, p))
+  const go = () => run((p) => splitPdf(file, { mode, ranges, sizeMb, everyN }, p))
 
   return (
     <div className="space-y-6">
@@ -68,10 +69,32 @@ export default function SplitPdf() {
                 By size — pack pages so each PDF stays under a target
               </label>
               <label className="flex items-center gap-2 text-sm">
+                <input type="radio" name="mode" checked={mode === 'everyN'} onChange={() => setMode('everyN')} />
+                Every N pages — fixed-size chunks
+              </label>
+              <label className="flex items-center gap-2 text-sm">
                 <input type="radio" name="mode" checked={mode === 'bookmarks'} onChange={() => setMode('bookmarks')} />
                 By bookmarks — one PDF per top-level bookmark (chapter)
               </label>
             </fieldset>
+            {mode === 'everyN' && (
+              <label className="block space-y-1">
+                <span className="field-label">Pages per file</span>
+                <input
+                  className="field-input"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={everyN}
+                  onChange={(e) => setEveryN(e.target.value)}
+                />
+                {pageCount != null && Number(everyN) >= 1 && (
+                  <span className="text-xs text-slate-500">
+                    {pageCount} pages → {Math.ceil(pageCount / Number(everyN))} file{Math.ceil(pageCount / Number(everyN)) === 1 ? '' : 's'} (last one may be smaller).
+                  </span>
+                )}
+              </label>
+            )}
             {mode === 'size' && (
               <label className="block space-y-1">
                 <span className="field-label">Target size per file (MB)</span>
