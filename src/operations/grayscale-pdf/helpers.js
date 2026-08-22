@@ -12,27 +12,34 @@ import { loadPdf } from '../../lib/pdfjs.js'
 // "convert every page to grayscale" as specified.
 
 /**
- * Desaturate in place. The canvas filter does the work where supported; the
- * manual ITU-R BT.601 luminance loop is the fallback for engines without
- * canvas filters.
+ * Desaturate a rendered page canvas. Returns a NEW canvas holding the gray
+ * result: the source is drawn onto a filtered second canvas (same approach as
+ * the greyscale-image operation), never wiped or self-drawn. The manual
+ * ITU-R BT.601 luminance loop is the fallback for engines without canvas
+ * filters; it reads the rendered pixels from the source and writes them,
+ * grayscaled, into the new canvas.
  */
 function desaturate(canvas) {
-  const ctx = canvas.getContext('2d')
-  ctx.fillStyle = '#ffffff'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  const out = document.createElement('canvas')
+  out.width = canvas.width
+  out.height = canvas.height
+  const ctx = out.getContext('2d')
   if (typeof ctx.filter === 'string') {
     ctx.filter = 'grayscale(1)'
     ctx.drawImage(canvas, 0, 0)
-    ctx.filter = 'none'
-    return
+    return out
   }
-  const image = ctx.getImageData(0, 0, canvas.width, canvas.height)
-  const px = image.data
-  for (let i = 0; i < px.length; i += 4) {
-    const gray = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]
-    px[i] = px[i + 1] = px[i + 2] = gray
+  const src = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height)
+  const dst = ctx.createImageData(canvas.width, canvas.height)
+  const s = src.data
+  const d = dst.data
+  for (let i = 0; i < s.length; i += 4) {
+    const gray = 0.299 * s[i] + 0.587 * s[i + 1] + 0.114 * s[i + 2]
+    d[i] = d[i + 1] = d[i + 2] = gray
+    d[i + 3] = s[i + 3]
   }
-  ctx.putImageData(image, 0, 0)
+  ctx.putImageData(dst, 0, 0)
+  return out
 }
 
 /** Canvas → JPEG bytes (grayscale-safe: no alpha to composite). */
@@ -104,8 +111,8 @@ export async function grayscalePdf(file, onProgress) {
       background: '#ffffff',
     }).promise
 
-    desaturate(canvas)
-    const jpg = await canvasToJpegBytes(canvas)
+    const grayCanvas = desaturate(canvas)
+    const jpg = await canvasToJpegBytes(grayCanvas)
     const image = await out.embedJpg(jpg)
 
     const pdfPage = out.addPage([width, height])
