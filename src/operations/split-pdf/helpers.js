@@ -80,7 +80,7 @@ function topLevelBookmarks(src) {
  * @returns {Promise<{filename:string, blob:Blob}[]>}
  */
 export async function splitPdf(file, opts, onProgress) {
-  const { mode = 'explode', ranges = '', sizeMb = 5 } = opts || {}
+  const { mode = 'explode', ranges = '', sizeMb = 5, everyN = 2 } = opts || {}
   let src
   try {
     src = await PDFDocument.load(await file.arrayBuffer())
@@ -114,6 +114,19 @@ export async function splitPdf(file, opts, onProgress) {
       const blob = await subsetPdf(src, pageIndices)
       const slug = (bookmarks[b].title || `chapter-${b + 1}`).replace(/[^\w-]+/g, '_').slice(0, 60)
       results.push({ filename: `${base}-${String(b + 1).padStart(2, '0')}-${slug}.pdf`, blob })
+    }
+  } else if (mode === 'everyN') {
+    const n = Math.floor(Number(everyN))
+    if (!Number.isFinite(n) || n < 1) throw new Error('Pages per file must be a whole number of 1 or more.')
+    const groups = []
+    for (let i = 0; i < total; i += n) groups.push(Array.from({ length: Math.min(n, total - i) }, (_, k) => i + k))
+    for (let g = 0; g < groups.length; g++) {
+      onProgress?.(g / groups.length, `Building file ${g + 1} of ${groups.length}…`)
+      const blob = await subsetPdf(src, groups[g])
+      const first = groups[g][0] + 1
+      const last = groups[g][groups[g].length - 1] + 1
+      const span = first === last ? `page${first}` : `pages${first}-${last}`
+      results.push({ filename: `${base}-${span}.pdf`, blob })
     }
   } else if (mode === 'explode') {
     for (let i = 0; i < total; i++) {
