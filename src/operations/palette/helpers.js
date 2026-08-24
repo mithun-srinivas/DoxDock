@@ -7,10 +7,6 @@ const DEFAULT_COLORS = 6
 const SAMPLE_SIZE = 100000
 const BUCKET_SIZE = 32
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value))
-}
-
 function toHex(value) {
   return value.toString(16).padStart(2, '0').toUpperCase()
 }
@@ -27,14 +23,6 @@ function colorInfo(r, g, b) {
 
 function quantize(value) {
   return Math.floor(value / BUCKET_SIZE)
-}
-
-function representative(value) {
-  return clamp(
-    value * BUCKET_SIZE + Math.floor(BUCKET_SIZE / 2),
-    0,
-    255,
-  )
 }
 
 function getSampleStep(width, height) {
@@ -58,7 +46,6 @@ function distanceSquared(a, b) {
 function extractBuckets(imageData, width, height, onProgress) {
   const buckets = new Map()
   const step = getSampleStep(width, height)
-  const totalRows = Math.ceil(height / step)
 
   for (let y = 0; y < height; y += step) {
     for (let x = 0; x < width; x += step) {
