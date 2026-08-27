@@ -78,6 +78,7 @@ export default function CropPdf() {
 
   const go = () => {
     if (!cropRect || !pageDims || !file) return
+    const overlayRect = overlayRef.current?.getBoundingClientRect()
     run((p) =>
       cropPdf(file, {
         x: cropRect.x,
@@ -86,8 +87,8 @@ export default function CropPdf() {
         h: cropRect.h,
         pageWidth: pageDims.widthPt,
         pageHeight: pageDims.heightPt,
-        canvasWidth: canvasRef.current?.width || 1,
-        canvasHeight: canvasRef.current?.height || 1,
+        canvasWidth: overlayRect?.width || canvasRef.current?.getBoundingClientRect().width || 1,
+        canvasHeight: overlayRect?.height || canvasRef.current?.getBoundingClientRect().height || 1,
         pageIndex,
         applyAll,
       }, p).then((blob) => ({ blob, filename: `${baseName(file.name)}-cropped.pdf` })),
