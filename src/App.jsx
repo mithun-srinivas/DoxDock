@@ -314,7 +314,7 @@ export default function App() {
                 className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-300"
               >
                 <Icon name="github" className="h-3.5 w-3.5" />
-                Star us on GitHub
+                Star us on GitHub ★
               </a>
             </p>
           </footer>
