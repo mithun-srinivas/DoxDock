@@ -86,9 +86,12 @@ export async function csvToPdf(file, opts, onProgress) {
   const lineHeight = fontSize * 1.4
   const headerH = showHeader ? lineHeight + 4 : 0
   const maxRows = Math.min(rows.length, 2000) // safety cap
+  const truncated = rows.length > 2000
+
+  if (truncated) onProgress?.(0.2, `Showing the first 2000 of ${rows.length} rows`)
 
   // Calculate column widths based on max content width.
-  const numCols = Math.max(...rows.map((r) => r.length))
+  const numCols = rows.reduce((max, r) => Math.max(max, r.length), 0)
   const colWidths = []
   for (let c = 0; c < numCols; c++) {
     let maxW = 40
@@ -116,7 +119,7 @@ export async function csvToPdf(file, opts, onProgress) {
   const drawHeader = (pg) => {
     if (!showHeader) return
     let x = margin
-    const hy = pg.getSize().y - margin - fontSize
+    const hy = pg.getHeight() - margin - fontSize
     for (let c = 0; c < numCols; c++) {
       const cell = (rows[0]?.[c] || '').substring(0, 60)
       pg.drawText(cell, { x, y: hy, size: fontSize, font: boldFont, color: rgb(0.15, 0.15, 0.15) })
@@ -137,7 +140,7 @@ export async function csvToPdf(file, opts, onProgress) {
       }
     }
 
-    const py = page.getSize().y - margin - headerH - (y * lineHeight) - fontSize
+    const py = page.getHeight() - margin - headerH - (y * lineHeight) - fontSize
     let x = margin
     for (let c = 0; c < numCols; c++) {
       const cell = (rows[r]?.[c] || '').substring(0, 60)
