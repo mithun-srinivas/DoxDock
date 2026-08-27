@@ -45,15 +45,18 @@ export default function ExtractPdfImages() {
 
       {running && progress && <Progress value={progress.value} message={progress.message} />}
       {error && <Note type="error" title="Couldn't extract images">{error}</Note>}
-      {result && !running && result.length === 0 && (
+      {result && !running && result.images.length === 0 && (
         <Note type="warning" title="No images found">
           This PDF doesn't appear to contain embedded images. Try "PDF to Images" for full-page renders instead.
         </Note>
       )}
-      {result && !running && result.length > 0 && (
+      {result && !running && result.images.length > 0 && (
         <>
-          <Note type="info">Found {result.length} embedded image{result.length === 1 ? '' : 's'}.</Note>
-          <ResultGallery results={result} zipName={`${file?.name?.replace(/\.pdf$/i, '') || 'pdf'}-images.zip`} />
+          <Note type="info">
+            Found {result.images.length} embedded image{result.images.length === 1 ? '' : 's'}.
+            {result.skipped.count > 0 && ` ${result.skipped.count} more use an encoding this tool can't export yet (${[...result.skipped.formats].join(', ')}).`}
+          </Note>
+          <ResultGallery results={result.images} zipName={`${file?.name?.replace(/\.pdf$/i, '') || 'pdf'}-images.zip`} />
         </>
       )}
     </div>

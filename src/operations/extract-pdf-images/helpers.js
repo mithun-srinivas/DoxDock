@@ -6,7 +6,7 @@ import { PDFDocument, PDFName, PDFStream, PDFDict } from 'pdf-lib'
  *
  * @param {File} file
  * @param {(v:number,m:string)=>void} onProgress
- * @returns {Promise<{blob:Blob, filename:string, width:number, height:number}[]>}
+ * @returns {Promise<{images:{blob:Blob,filename:string,width:number,height:number}[], skipped:{count:number,formats:Set<string>}}>}
  */
 export async function extractPdfImages(file, onProgress) {
   onProgress?.(0.1, 'Opening PDF…')
@@ -25,6 +25,7 @@ export async function extractPdfImages(file, onProgress) {
 
   const seen = new Set()
   const results = []
+  const skipped = { count: 0, formats: new Set() }
   const pages = doc.getPages()
   let imgIdx = 0
 
@@ -68,10 +69,11 @@ export async function extractPdfImages(file, onProgress) {
         ext = 'jp2'
         mime = 'image/jp2'
       } else if (/FlateDecode|LZWDecode|RunLengthDecode|CCITTFaxDecode/i.test(filtName)) {
-        // These compressed formats need decoding. We'll try to render via canvas.
-        // For now, store raw and attempt decode below.
-        ext = 'png'
-        mime = 'image/png'
+        // These compressed formats produce raw pixel samples, not a valid image file.
+        // Skip them to avoid emitting corrupt files.
+        skipped.count++
+        skipped.formats.add(filtName.replace(/[^a-zA-Z]/g, ''))
+        continue
       }
 
       imgIdx++
@@ -87,5 +89,5 @@ export async function extractPdfImages(file, onProgress) {
   }
 
   onProgress?.(1, 'Done')
-  return results
+  return { images: results, skipped }
 }
