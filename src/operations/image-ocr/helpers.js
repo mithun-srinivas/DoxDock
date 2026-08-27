@@ -1,8 +1,8 @@
 import { createWorker } from 'tesseract.js'
 
-const WORKER_PATH = '/tesseract/worker.min.js'
-const CORE_PATH = '/tesseract'
-const LANG_PATH = '/tessdata'
+const WORKER_PATH = '/models/tesseract/worker.min.js'
+const CORE_PATH = '/models/tesseract'
+const LANG_PATH = '/models/tesseract'
 
 export async function recognizeImages(files, onProgress) {
   if (!files?.length) throw new Error('Please select at least one image.')
