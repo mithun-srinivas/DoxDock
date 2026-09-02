@@ -83,6 +83,8 @@ const P = {
   code: '<path d="m16 18 6-6-6-6"/><path d="M8 6l-6 6 6 6"/>',
   lock:
     '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  unlock:
+    '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.9-1"/>',
   pencil:
     '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
   cursor:
