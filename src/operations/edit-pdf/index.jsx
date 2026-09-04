@@ -287,7 +287,14 @@ export default function EditPdf() {
 
   const updateAnno = (id, patch) => setAnnos((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)))
   // Apply a style change to the currently-selected annotation (if any).
-  const patchSelected = (patch) => selectedId && updateAnno(selectedId, patch)
+  // Goes through `commit` (not `updateAnno`) so style edits land in undo
+  // history. `updateAnno` stays raw on purpose: it also serves drag/resize
+  // `onChange`, which fires many updates per gesture.
+  const patchSelected = (patch) => {
+    if (!selectedId) return
+    const id = selectedId
+    commit((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)))
+  }
 
   // ── erase (delete added items under the cursor) ──
   const distToSeg = (px, py, x1, y1, x2, y2) => {
